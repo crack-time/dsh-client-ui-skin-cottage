@@ -88,7 +88,7 @@ body[data-dsh-cottage] {
   --dsw-specific-bubble-highlight: rgba(90, 159, 212, 0.12);
 
   /* 输入框 */
-  --dsw-specific-input-major: rgba(255, 255, 255, 0.60);
+  --dsw-specific-input-major: rgba(255, 255, 255, 0.85);
 
   /* 菜单 / 选择器 */
   --dsw-specific-menu: rgba(255, 255, 255, 0.72);
@@ -146,7 +146,7 @@ body[data-dsh-cottage][data-ds-dark-theme] {
   --dsw-specific-sidebar-fill: rgba(22, 26, 34, 0.52);
   --dsw-specific-bubble: rgba(26, 30, 38, 0.50);
   --dsw-specific-bubble-highlight: rgba(122, 184, 232, 0.12);
-  --dsw-specific-input-major: rgba(18, 22, 30, 0.58);
+  --dsw-specific-input-major: rgba(18, 22, 30, 0.85);
   --dsw-specific-menu: rgba(22, 26, 34, 0.72);
   --dsw-specific-selector: rgba(26, 30, 38, 0.66);
 
@@ -157,6 +157,91 @@ body[data-dsh-cottage][data-ds-dark-theme] {
   --dsw-alias-tooltip-bg: rgba(22, 26, 34, 0.95);
 }
 
+
+/* ============================================
+   中央聊天区：父容器全透明，壁纸全显示
+   （子区域保持现状：气泡/输入卡半透明不变）
+   ============================================ */
+body[data-dsh-cottage] .wSkVaW_root {
+  background: transparent;
+}
+
+/* ============================================
+   布局框架（frame）：全透明，壁纸全显示
+   （侧栏/详情列有自己的背景，不受影响）
+   ============================================ */
+body[data-dsh-cottage] .pI_x6G_frame {
+  background: transparent;
+}
+
+/* ============================================
+   消息文本列：与输入框等宽、同圆角、同透明度
+   背景挂在视口固定的滚动容器（scrollBody）上：
+   内容在面板内滚动，上下圆角始终可见；
+   消息内容仍保持 748px（--dsh-chat-content-width）
+   ============================================ */
+body[data-dsh-cottage] .wSkVaW_scrollBody {
+  max-width: var(--dsh-composer-card-max-width);
+  margin: 0 auto;
+  background: var(--dsw-specific-input-major);
+  /* 圆角已去掉，先看直角效果 */
+}
+
+/* 滚动区内边距收窄到 16px，让消息内容正好 748px
+   （默认 32px 会把内容挤窄到 716px） */
+body[data-dsh-cottage] .Md3f7G_scroll {
+  padding: 16px calc((var(--dsh-composer-card-max-width) - var(--dsh-chat-content-width)) / 2);
+}
+
+/* ============================================
+   输入框座位（整条：统计条 + 输入卡）：由皮肤 JS 移出
+   滚动容器（成为 scrollBody 之后的兄弟），宽度与面板
+   一致并居中；滚动视口下边缘 = 输入框顶部，文本不会
+   穿到其后；整条共用文本列同款白色背景
+   ============================================ */
+body[data-dsh-cottage] .wSkVaW_composerSeat {
+  max-width: var(--dsh-composer-card-max-width);
+  margin: 0 auto;
+  background: var(--dsw-specific-input-major);
+}
+
+/* 原生"回到底部"按钮：保留 dsh 的滚动监听，但按钮本体
+   用皮肤自绘的居中版本（见 build-client.js），原生槽隐藏 */
+body[data-dsh-cottage] .Md3f7G_toBottomSlot {
+  display: none;
+}
+
+/* 输入框座位（激活态）：覆盖 dsh 的渐隐渐变，整条白色背景与文本列一致 */
+body[data-dsh-cottage] .wSkVaW_root[data-phase="active"] .wSkVaW_composerSeat {
+  background: var(--dsw-specific-input-major);
+}
+
+/* ============================================
+   顶部标题栏：透明度与中间文本区一致
+   ============================================ */
+body[data-dsh-cottage] .wSkVaW_header {
+  background: var(--dsw-specific-input-major);
+}
+
+/* ============================================
+   侧边栏：透明度与中间文本区一致
+   （布局列 .pI_x6G_sidebarCol 保持透明，
+    侧栏根 .hHd-Xa_root 使用 input-major）
+   ============================================ */
+body[data-dsh-cottage] .pI_x6G_sidebarCol {
+  background: transparent;
+}
+body[data-dsh-cottage] .hHd-Xa_root {
+  background: var(--dsw-specific-input-major);
+}
+
+/* ============================================
+   会话列表底部渐隐条：渐隐进 sidebar-fill 颜色，
+   在壁纸上形成白色边界，去掉
+   ============================================ */
+body[data-dsh-cottage] .qDHVXG_fade {
+  display: none;
+}
 
 /* ============================================
    侧栏折叠按钮微调
