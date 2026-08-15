@@ -186,7 +186,13 @@ body[data-dsh-cottage] .wSkVaW_scrollBody {
   width: 100%;
   max-width: var(--dsh-composer-card-max-width);
   margin: 0 auto;
-  background: var(--dsw-specific-input-major);
+  /* 左右边缘渐变淡出，避免白面板与壁纸硬切（中间仍为 85% 不透明） */
+  background-color: transparent;
+  background-image: linear-gradient(to right,
+    transparent 0,
+    var(--dsw-specific-input-major) 2px,
+    var(--dsw-specific-input-major) calc(100% - 2px),
+    transparent 100%);
 }
 
 /* 新建对话（hero 欢迎态）：解除面板约束，恢复 dsh 全宽布局
@@ -215,7 +221,12 @@ body[data-dsh-cottage] .wSkVaW_root[data-phase="active"] .wSkVaW_composerSeat {
   width: 100%;
   max-width: var(--dsh-composer-card-max-width);
   margin: 0 auto;
-  background: var(--dsw-specific-input-major);
+  background-color: transparent;
+  background-image: linear-gradient(to right,
+    transparent 0,
+    var(--dsw-specific-input-major) 2px,
+    var(--dsw-specific-input-major) calc(100% - 2px),
+    transparent 100%);
 }
 
 /* ============================================
