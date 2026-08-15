@@ -218,6 +218,16 @@ body[data-dsh-cottage] .wSkVaW_root[data-phase="active"] .wSkVaW_composerSeat {
   background: var(--dsw-specific-input-major);
 }
 
+/* ============================================
+   会话统计条：放宽到与座位同宽（780px），
+   内边距收窄，完整展示统计文本不被省略号截断
+   ============================================ */
+body[data-dsh-cottage] .FJxK0a_root {
+  max-width: var(--dsh-composer-card-max-width);
+  padding: 4px 4px 0;
+  font-size: 12px;
+}
+
 /* 原生"回到底部"按钮：保留 dsh 的滚动监听，但按钮本体
    用皮肤自绘的居中版本（见 build-client.js），原生槽隐藏 */
 body[data-dsh-cottage] .Md3f7G_toBottomSlot {
