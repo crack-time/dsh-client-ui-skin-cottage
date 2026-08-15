@@ -180,7 +180,10 @@ body[data-dsh-cottage] .pI_x6G_frame {
    内容在面板内滚动，上下圆角始终可见；
    消息内容仍保持 748px（--dsh-chat-content-width）
    ============================================ */
+/* width:100% + max-width：作为 flex 子项带 margin:0 auto 时不会被拉伸，
+   若只靠 max-width 宽度会退化到内容宽度（加载历史时缩成窄条） */
 body[data-dsh-cottage] .wSkVaW_scrollBody {
+  width: 100%;
   max-width: var(--dsh-composer-card-max-width);
   margin: 0 auto;
   background: var(--dsw-specific-input-major);
@@ -209,6 +212,7 @@ body[data-dsh-cottage] .Md3f7G_scroll {
    hero/其他阶段不约束，保持 dsh 原布局
    ============================================ */
 body[data-dsh-cottage] .wSkVaW_root[data-phase="active"] .wSkVaW_composerSeat {
+  width: 100%;
   max-width: var(--dsh-composer-card-max-width);
   margin: 0 auto;
   background: var(--dsw-specific-input-major);
