@@ -140,9 +140,30 @@ const js = `window.__ModuleLoader__.load({
 \t\t\t\tupdateBottomBtn();
 \t\t\t}
 
+\t\t\t// ChatView keeps its instance across session switches (slot key is the
+\t\t\t// registration entry, not the session id), so dsh's "first open" scroll
+\t\t\t// logic never runs again and switching conversations inherits the old
+\t\t\t// scroll position. Detect the switch via the header breadcrumbs and pin
+\t\t\t// the list to the bottom for a short window while the content settles.
+\t\t\tlet lastCrumbs = null;
+\t\t\tlet followUntil = 0;
+\t\t\tconst switchWindowMs = 2000;
 \t\t\tfunction onDomChange() {
 \t\t\t\tmoveSeat();
 \t\t\t\tensureBottomButton();
+\t\t\t\tconst chatActive = !!document.querySelector(".wSkVaW_scrollBody .Md3f7G_root");
+\t\t\t\tconst crumb = document.querySelector(".wSkVaW_crumbs");
+\t\t\t\tconst crumbText = crumb ? crumb.textContent : "";
+\t\t\t\tif (chatActive && crumbText !== lastCrumbs) {
+\t\t\t\t\tfollowUntil = Date.now() + switchWindowMs;
+\t\t\t\t\tlastCrumbs = crumbText;
+\t\t\t\t} else if (!chatActive) {
+\t\t\t\t\tlastCrumbs = crumbText;
+\t\t\t\t}
+\t\t\t\tconst sb = document.querySelector(".wSkVaW_scrollBody");
+\t\t\t\tif (sb && (Date.now() < followUntil || atBottomNow(sb))) {
+\t\t\t\t\tsb.scrollTop = sb.scrollHeight;
+\t\t\t\t}
 \t\t\t}
 \t\t\tonDomChange();
 \t\t\tconst obs2 = new MutationObserver(onDomChange);

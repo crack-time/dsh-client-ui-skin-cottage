@@ -184,22 +184,31 @@ body[data-dsh-cottage] .wSkVaW_scrollBody {
   max-width: var(--dsh-composer-card-max-width);
   margin: 0 auto;
   background: var(--dsw-specific-input-major);
-  /* 圆角已去掉，先看直角效果 */
+}
+
+/* 新建对话（hero 欢迎态）：解除面板约束，恢复 dsh 全宽布局
+   （hero 内容本就以 780px 居中，不再套白色面板） */
+body[data-dsh-cottage] .wSkVaW_root[data-phase="hero"] .wSkVaW_scrollBody {
+  max-width: none;
+  margin: 0;
+  background: transparent;
 }
 
 /* 滚动区内边距收窄到 16px，让消息内容正好 748px
    （默认 32px 会把内容挤窄到 716px） */
 body[data-dsh-cottage] .Md3f7G_scroll {
-  padding: 16px calc((var(--dsh-composer-card-max-width) - var(--dsh-chat-content-width)) / 2);
+  padding: 16px;
+  /* Simplified padding - no longer needs complex calculation */
 }
 
 /* ============================================
-   输入框座位（整条：统计条 + 输入卡）：由皮肤 JS 移出
-   滚动容器（成为 scrollBody 之后的兄弟），宽度与面板
-   一致并居中；滚动视口下边缘 = 输入框顶部，文本不会
-   穿到其后；整条共用文本列同款白色背景
+   输入框座位（仅激活态：整条 = 统计条 + 输入卡）：
+   由皮肤 JS 移出滚动容器（成为 scrollBody 之后的兄弟），
+   宽度与面板一致并居中；滚动视口下边缘 = 输入框顶部，
+   文本不会穿到其后；整条共用文本列同款白色背景。
+   hero/其他阶段不约束，保持 dsh 原布局
    ============================================ */
-body[data-dsh-cottage] .wSkVaW_composerSeat {
+body[data-dsh-cottage] .wSkVaW_root[data-phase="active"] .wSkVaW_composerSeat {
   max-width: var(--dsh-composer-card-max-width);
   margin: 0 auto;
   background: var(--dsw-specific-input-major);
@@ -209,11 +218,6 @@ body[data-dsh-cottage] .wSkVaW_composerSeat {
    用皮肤自绘的居中版本（见 build-client.js），原生槽隐藏 */
 body[data-dsh-cottage] .Md3f7G_toBottomSlot {
   display: none;
-}
-
-/* 输入框座位（激活态）：覆盖 dsh 的渐隐渐变，整条白色背景与文本列一致 */
-body[data-dsh-cottage] .wSkVaW_root[data-phase="active"] .wSkVaW_composerSeat {
-  background: var(--dsw-specific-input-major);
 }
 
 /* ============================================
@@ -276,6 +280,121 @@ body[data-dsh-cottage] ::-webkit-scrollbar-thumb {
 }
 body[data-dsh-cottage] ::-webkit-scrollbar-thumb:hover {
   background: rgba(90, 159, 212, 0.5);
+}
+
+/* ============================================
+   轨迹视图（点"轨迹"后展示的一切）：
+   :has() 检测到轨迹根 .qBU-ya_root 存在时，
+   在 body 层恢复 dsh 原始 token —— 轨迹根、内部
+   各面板、以及弹层/菜单等 portal 渲染全部保持默认
+   ============================================ */
+body[data-dsh-cottage]:has(.qBU-ya_root) {
+  --dsw-alias-bg-base: var(--dsw-static-neutral-bluish-00);
+  --dsw-alias-bg-layer-1: var(--dsw-static-neutral-bluish-00);
+  --dsw-alias-bg-layer-2: var(--dsw-static-neutral-bluish-00);
+  --dsw-alias-bg-layer-3: var(--dsw-static-neutral-bluish-00);
+  --dsw-alias-bg-overlay: var(--dsw-static-neutral-bluish-150);
+  --dsw-alias-bg-mask-1: rgba(0, 0, 0, 0.24);
+  --dsw-alias-bg-mask-2: rgba(0, 0, 0, 0.12);
+  --dsw-alias-bg-mask-3: rgba(0, 0, 0, 0.48);
+  --dsw-alias-bg-skeleton: rgba(0, 0, 0, 0.04);
+  --dsw-alias-bg-multi-select: var(--dsw-static-neutral-bluish-60);
+  --dsw-alias-border-l1: rgba(0, 0, 0, 0.04);
+  --dsw-alias-border-l2: rgba(0, 0, 0, 0.1);
+  --dsw-alias-border-l3: rgba(0, 0, 0, 0.12);
+  --dsw-alias-brand-primary: var(--dsw-static-neutral-bluish-1000);
+  --dsw-alias-brand-primary-invert: var(--dsw-static-neutral-bluish-1000);
+  --dsw-alias-brand-text: var(--dsw-static-neutral-bluish-1000);
+  --dsw-alias-button-contrast-fill: var(--dsw-static-neutral-bluish-700);
+  --dsw-alias-button-elevated-fill: var(--dsw-static-neutral-bluish-00);
+  --dsw-alias-button-primary-fill: var(--dsw-alias-brand-primary);
+  --dsw-alias-button-primary-hover: var(--dsw-static-neutral-bluish-750);
+  --dsw-alias-interactive-bg-hover: rgba(38, 49, 72, 0.06);
+  --dsw-alias-interactive-bg-active: rgba(38, 49, 72, 0.1);
+  --dsw-alias-interactive-bg-hover-accent: rgba(38, 49, 72, 0.14);
+  --dsw-alias-label-primary: var(--dsw-static-neutral-bluish-1000);
+  --dsw-alias-label-secondary: var(--dsw-static-neutral-bluish-700);
+  --dsw-alias-label-tertiary: var(--dsw-static-neutral-bluish-600);
+  --dsw-alias-label-primary-inverted: var(--dsw-static-neutral-bluish-00);
+  --dsw-alias-markdown-code-block: var(--dsw-static-neutral-bluish-50);
+  --dsw-alias-markdown-inline-code: var(--dsw-static-neutral-bluish-100);
+  --dsw-alias-state-success-primary: var(--dsw-static-green-500);
+  --dsw-alias-state-warn-primary: var(--dsw-static-amber-500);
+  --dsw-alias-toast-bg: var(--dsw-static-neutral-bluish-800);
+  --dsw-alias-tooltip-bg: var(--dsw-static-neutral-bluish-850);
+  --dsw-specific-bubble: var(--dsw-static-deepseek-50);
+  --dsw-specific-bubble-highlight: var(--dsw-static-deepseek-200);
+  --dsw-specific-input-major: var(--dsw-static-neutral-bluish-00);
+  --dsw-specific-menu: var(--dsw-alias-bg-layer-3);
+  --dsw-specific-selector: var(--dsw-static-neutral-bluish-60);
+  --dsw-specific-sidebar-fill: var(--dsw-static-neutral-bluish-50);
+}
+
+body[data-dsh-cottage][data-ds-dark-theme]:has(.qBU-ya_root) {
+  --dsw-alias-bg-base: var(--dsw-static-neutral-bluish-950);
+  --dsw-alias-bg-layer-1: var(--dsw-static-neutral-bluish-875);
+  --dsw-alias-bg-layer-2: var(--dsw-static-neutral-bluish-850);
+  --dsw-alias-bg-layer-3: var(--dsw-static-neutral-bluish-800);
+  --dsw-alias-bg-overlay: var(--dsw-static-neutral-bluish-700);
+  --dsw-alias-bg-mask-1: rgba(0, 0, 0, 0.5);
+  --dsw-alias-bg-mask-2: rgba(0, 0, 0, 0.2);
+  --dsw-alias-bg-mask-3: rgba(0, 0, 0, 0.48);
+  --dsw-alias-bg-skeleton: rgba(255, 255, 255, 0.08);
+  --dsw-alias-bg-multi-select: var(--dsw-static-neutral-850);
+  --dsw-alias-border-l1: rgba(255, 255, 255, 0.06);
+  --dsw-alias-border-l2: rgba(255, 255, 255, 0.12);
+  --dsw-alias-border-l3: rgba(255, 255, 255, 0.16);
+  --dsw-alias-brand-primary: var(--dsw-static-neutral-bluish-50);
+  --dsw-alias-brand-primary-invert: var(--dsw-static-neutral-bluish-50);
+  --dsw-alias-brand-text: var(--dsw-static-neutral-bluish-50);
+  --dsw-alias-button-contrast-fill: var(--dsw-static-neutral-bluish-50);
+  --dsw-alias-button-elevated-fill: var(--dsw-static-neutral-bluish-750);
+  --dsw-alias-button-primary-fill: var(--dsw-alias-brand-primary);
+  --dsw-alias-button-primary-hover: var(--dsw-static-neutral-bluish-100);
+  --dsw-alias-interactive-bg-hover: rgba(255, 255, 255, 0.08);
+  --dsw-alias-interactive-bg-active: rgba(255, 255, 255, 0.14);
+  --dsw-alias-interactive-bg-hover-accent: rgba(255, 255, 255, 0.24);
+  --dsw-alias-label-primary: var(--dsw-static-neutral-bluish-50);
+  --dsw-alias-label-secondary: var(--dsw-static-neutral-bluish-300);
+  --dsw-alias-label-tertiary: var(--dsw-static-neutral-bluish-400);
+  --dsw-alias-label-primary-inverted: var(--dsw-static-neutral-bluish-800);
+  --dsw-alias-markdown-code-block: var(--dsw-static-neutral-bluish-900);
+  --dsw-alias-markdown-inline-code: var(--dsw-static-neutral-bluish-850);
+  --dsw-alias-state-success-primary: var(--dsw-static-green-500);
+  --dsw-alias-state-warn-primary: var(--dsw-static-amber-500);
+  --dsw-alias-toast-bg: var(--dsw-static-neutral-bluish-750);
+  --dsw-alias-tooltip-bg: var(--dsw-static-neutral-bluish-750);
+  --dsw-specific-bubble: var(--dsw-static-neutral-bluish-850);
+  --dsw-specific-bubble-highlight: var(--dsw-static-neutral-bluish-750);
+  --dsw-specific-input-major: var(--dsw-static-neutral-bluish-850);
+  --dsw-specific-menu: var(--dsw-alias-bg-layer-3);
+  --dsw-specific-selector: var(--dsw-static-neutral-bluish-800);
+  --dsw-specific-sidebar-fill: var(--dsw-static-neutral-bluish-900);
+}
+
+/* 轨迹模式下解除皮肤布局约束，恢复 dsh 默认结构 */
+body[data-dsh-cottage]:has(.qBU-ya_root) .pI_x6G_frame {
+  background: var(--dsw-alias-bg-base);
+}
+body[data-dsh-cottage]:has(.qBU-ya_root) .wSkVaW_scrollBody {
+  max-width: none;
+  margin: 0;
+  background: transparent;
+}
+body[data-dsh-cottage]:has(.qBU-ya_root) .pI_x6G_sidebarCol,
+body[data-dsh-cottage]:has(.qBU-ya_root) .hHd-Xa_root {
+  background: var(--dsw-specific-sidebar-fill);
+}
+body[data-dsh-cottage]:has(.qBU-ya_root) .qDHVXG_fade {
+  display: block;
+}
+
+/* 轨迹模式下滚动条滑块还原默认颜色 */
+body[data-dsh-cottage]:has(.qBU-ya_root) ::-webkit-scrollbar-thumb {
+  background: var(--dsw-alias-scrollbar-bg-l2);
+}
+body[data-dsh-cottage]:has(.qBU-ya_root) ::-webkit-scrollbar-thumb:hover {
+  background: var(--dsw-alias-scrollbar-hover-l2);
 }
 
 /* ============================================
