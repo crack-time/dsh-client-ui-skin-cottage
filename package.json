@@ -1,0 +1,28 @@
+{
+  "name": "@crack/dsh-client-ui-skin-cottage",
+  "description": "Pastoral cottage skin for the DSH web GUI: full-screen wallpaper with frosted-glass panels",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "lib/index.js",
+  "exports": {
+    ".": "./lib/index.js",
+    "./client": "./lib/client.js",
+    "./package.json": "./package.json"
+  },
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "inject": [],
+      "platform": "web"
+    }
+  },
+  "license": "MIT",
+  "files": [
+    "lib",
+    "assets",
+    "cordis.patch.yml",
+    "skin.json"
+  ]
+}

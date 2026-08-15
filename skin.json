@@ -1,0 +1,23 @@
+{
+  "id": "cottage",
+  "name": "田园小屋",
+  "nameEn": "Pastoral Cottage",
+  "author": "crack",
+  "tagline": "吉卜力田园风光 · 全屏壁纸 · 毛玻璃面板",
+  "description": "田园小屋皮肤：3840x2160 吉卜力风格田园插画全屏铺底，所有面板使用半透明毛玻璃效果，天空蓝与暖阳橙色调贯穿全局。",
+  "tags": [
+    "pastoral",
+    "cottage",
+    "ghibli",
+    "nature",
+    "glass"
+  ],
+  "accent": "#5a9fd4",
+  "bodyAttr": "data-dsh-cottage",
+  "package": "@crack/dsh-client-ui-skin-cottage",
+  "wiring": {
+    "id": "ui-skin-cottage",
+    "bundleWired": true
+  },
+  "order": 99
+}

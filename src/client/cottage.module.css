@@ -1,0 +1,203 @@
+/* ============================================
+   田园小屋 (Pastoral Cottage) Skin
+   3840x2160 吉卜力风格田园插画全屏背景
+   半透明毛玻璃面板
+   ============================================ */
+
+/* === 亮色版 === */
+body[data-dsh-cottage] {
+  /* 壁纸全屏铺底 */
+  background-color: #3a6ea5;
+  background-size: cover;
+  background-position: center center;
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+
+  /* 全局字体保持默认 */
+  color: #2c3e50;
+}
+
+/* === 暗色版 === */
+body[data-dsh-cottage][data-ds-dark-theme] {
+  color: #e0e6ed;
+}
+
+/* ---- #root 容器：透明背景让壁纸透出来 ---- */
+body[data-dsh-cottage] #root {
+  background: transparent !important;
+}
+
+/* ---- 选区颜色 ---- */
+body[data-dsh-cottage] ::selection {
+  color: #fff;
+  background: #5a9fd4;
+}
+
+/* ============================================
+   Design Token 覆盖 — 亮色
+   ============================================ */
+body[data-dsh-cottage] {
+  /* 品牌色：天空蓝 */
+  --dsw-alias-brand-primary: #5a9fd4;
+  --dsw-alias-brand-primary-invert: #fff;
+  --dsw-alias-brand-text: #4a8fc4;
+
+  /* 背景：半透明毛玻璃 */
+  --dsw-alias-bg-base: rgba(255, 255, 255, 0.48);
+  --dsw-alias-bg-layer-1: rgba(255, 255, 255, 0.42);
+  --dsw-alias-bg-layer-2: rgba(250, 249, 247, 0.90);
+  --dsw-alias-bg-layer-3: rgba(240, 237, 230, 0.48);
+  --dsw-alias-bg-overlay: rgba(255, 255, 255, 0.68);
+  --dsw-alias-bg-mask-1: rgba(0, 0, 0, 0.45);
+  --dsw-alias-bg-mask-2: rgba(0, 0, 0, 0.08);
+  --dsw-alias-bg-mask-3: rgba(0, 0, 0, 0.2);
+  --dsw-alias-bg-skeleton: rgba(90, 159, 212, 0.08);
+  --dsw-alias-bg-multi-select: rgba(90, 159, 212, 0.15);
+
+  /* 边框 */
+  --dsw-alias-border-l1: rgba(90, 159, 212, 0.12);
+  --dsw-alias-border-l2: rgba(90, 159, 212, 0.18);
+  --dsw-alias-border-l3: rgba(90, 159, 212, 0.25);
+
+  /* 文字 */
+  --dsw-alias-label-primary: #2c3e50;
+  --dsw-alias-label-secondary: #46535f;
+  --dsw-alias-label-tertiary: #64748a;
+  --dsw-alias-label-primary-inverted: #fff;
+
+  /* 交互 */
+  --dsw-alias-interactive-bg-hover: rgba(90, 159, 212, 0.10);
+  --dsw-alias-interactive-bg-active: rgba(90, 159, 212, 0.15);
+  --dsw-alias-interactive-bg-hover-accent: rgba(90, 159, 212, 0.14);
+
+  /* 按钮 */
+  --dsw-alias-button-primary-fill: #5a9fd4;
+  --dsw-alias-button-primary-hover: #4a8fc4;
+  --dsw-alias-button-elevated-fill: rgba(255, 255, 255, 0.65);
+  --dsw-alias-button-contrast-fill: #3a6ea5;
+
+  /* 状态色 */
+  --dsw-alias-state-success-primary: #5a8a3c;
+  --dsw-alias-state-warn-primary: #d4922a;
+
+  /* 侧边栏 */
+  --dsw-specific-sidebar-fill: rgba(248, 245, 240, 0.42);
+
+  /* 聊天气泡 */
+  --dsw-specific-bubble: rgba(255, 255, 255, 0.48);
+  --dsw-specific-bubble-highlight: rgba(90, 159, 212, 0.12);
+
+  /* 输入框 */
+  --dsw-specific-input-major: rgba(255, 255, 255, 0.60);
+
+  /* 菜单 / 选择器 */
+  --dsw-specific-menu: rgba(255, 255, 255, 0.72);
+  --dsw-specific-selector: rgba(248, 245, 240, 0.62);
+
+  /* 代码块 */
+  --dsw-alias-markdown-code-block: rgba(248, 245, 240, 0.58);
+  --dsw-alias-markdown-inline-code: rgba(248, 245, 240, 0.64);
+
+  /* Toast / Tooltip */
+  --dsw-alias-toast-bg: rgba(45, 75, 105, 0.92);
+  --dsw-alias-tooltip-bg: rgba(44, 44, 46, 0.95);
+}
+
+/* ============================================
+   Design Token 覆盖 — 暗色
+   ============================================ */
+body[data-dsh-cottage][data-ds-dark-theme] {
+  --dsw-alias-brand-primary: #7ab8e8;
+  --dsw-alias-brand-primary-invert: #1a2a3a;
+  --dsw-alias-brand-text: #7ab8e8;
+
+  --dsw-alias-bg-base: rgba(18, 22, 30, 0.52);
+  --dsw-alias-bg-layer-1: rgba(22, 26, 34, 0.50);
+  --dsw-alias-bg-layer-2: rgba(26, 30, 38, 0.90);
+  --dsw-alias-bg-layer-3: rgba(30, 34, 42, 0.46);
+  --dsw-alias-bg-overlay: rgba(20, 24, 32, 0.72);
+  --dsw-alias-bg-mask-1: rgba(0, 0, 0, 0.55);
+  --dsw-alias-bg-mask-2: rgba(0, 0, 0, 0.25);
+  --dsw-alias-bg-mask-3: rgba(0, 0, 0, 0.5);
+  --dsw-alias-bg-skeleton: rgba(122, 184, 232, 0.08);
+  --dsw-alias-bg-multi-select: rgba(122, 184, 232, 0.12);
+
+  --dsw-alias-border-l1: rgba(122, 184, 232, 0.10);
+  --dsw-alias-border-l2: rgba(122, 184, 232, 0.16);
+  --dsw-alias-border-l3: rgba(122, 184, 232, 0.22);
+
+  --dsw-alias-label-primary: #e0e6ed;
+  --dsw-alias-label-secondary: #a0aab4;
+  --dsw-alias-label-tertiary: #7a8490;
+  --dsw-alias-label-primary-inverted: #1a2a3a;
+
+  --dsw-alias-interactive-bg-hover: rgba(122, 184, 232, 0.10);
+  --dsw-alias-interactive-bg-active: rgba(122, 184, 232, 0.15);
+  --dsw-alias-interactive-bg-hover-accent: rgba(122, 184, 232, 0.12);
+
+  --dsw-alias-button-primary-fill: #4a8ab8;
+  --dsw-alias-button-primary-hover: #5a9ac8;
+  --dsw-alias-button-elevated-fill: rgba(30, 34, 42, 0.62);
+  --dsw-alias-button-contrast-fill: #7ab8e8;
+
+  --dsw-alias-state-success-primary: #6aaa4c;
+  --dsw-alias-state-warn-primary: #e8a83c;
+
+  --dsw-specific-sidebar-fill: rgba(22, 26, 34, 0.52);
+  --dsw-specific-bubble: rgba(26, 30, 38, 0.50);
+  --dsw-specific-bubble-highlight: rgba(122, 184, 232, 0.12);
+  --dsw-specific-input-major: rgba(18, 22, 30, 0.58);
+  --dsw-specific-menu: rgba(22, 26, 34, 0.72);
+  --dsw-specific-selector: rgba(26, 30, 38, 0.66);
+
+  --dsw-alias-markdown-code-block: rgba(22, 26, 34, 0.55);
+  --dsw-alias-markdown-inline-code: rgba(26, 30, 38, 0.60);
+
+  --dsw-alias-toast-bg: rgba(30, 38, 50, 0.92);
+  --dsw-alias-tooltip-bg: rgba(22, 26, 34, 0.95);
+}
+
+
+/* ============================================
+   侧栏折叠按钮微调
+   ============================================ */
+/* 展开态：折叠按钮略左移，不贴右缘 */
+body[data-dsh-cottage] .hHd-Xa_logoRow > button:last-child {
+  margin-right: 7px;
+}
+
+/* ============================================
+   按钮美化
+   ============================================ */
+
+/* 主按钮 */
+body[data-dsh-cottage] button[aria-pressed],
+body[data-dsh-cottage] [class*="sendButton"] {
+  transition: background 0.2s, box-shadow 0.2s;
+}
+
+/* ============================================
+   滚动条美化
+   ============================================ */
+body[data-dsh-cottage] ::-webkit-scrollbar {
+  width: 6px;
+}
+body[data-dsh-cottage] ::-webkit-scrollbar-track {
+  background: transparent;
+}
+body[data-dsh-cottage] ::-webkit-scrollbar-thumb {
+  background: rgba(90, 159, 212, 0.3);
+  border-radius: 3px;
+}
+body[data-dsh-cottage] ::-webkit-scrollbar-thumb:hover {
+  background: rgba(90, 159, 212, 0.5);
+}
+
+/* ============================================
+   减少动画偏好
+   ============================================ */
+@media (prefers-reduced-motion: reduce) {
+  body[data-dsh-cottage] * {
+    transition: none !important;
+  }
+}
