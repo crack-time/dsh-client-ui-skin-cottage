@@ -12,25 +12,11 @@ body[data-dsh-cottage] {
   background-position: center center;
   background-attachment: fixed;
   background-repeat: no-repeat;
-
-  /* 全局字体保持默认 */
-  color: #2c3e50;
-}
-
-/* === 暗色版 === */
-body[data-dsh-cottage][data-ds-dark-theme] {
-  color: #e0e6ed;
 }
 
 /* ---- #root 容器：透明背景让壁纸透出来 ---- */
 body[data-dsh-cottage] #root {
   background: transparent !important;
-}
-
-/* ---- 选区颜色 ---- */
-body[data-dsh-cottage] ::selection {
-  color: #fff;
-  background: #5a9fd4;
 }
 
 /* ============================================
@@ -49,10 +35,6 @@ body[data-dsh-cottage] {
   --dsw-alias-bg-layer-3: rgba(240, 237, 230, 0.48);
   --dsw-alias-bg-overlay: rgba(255, 255, 255, 0.68);
   --dsw-alias-bg-mask-1: rgba(0, 0, 0, 0.45);
-  --dsw-alias-bg-mask-2: rgba(0, 0, 0, 0.08);
-  --dsw-alias-bg-mask-3: rgba(0, 0, 0, 0.2);
-  --dsw-alias-bg-skeleton: rgba(90, 159, 212, 0.08);
-  --dsw-alias-bg-multi-select: rgba(90, 159, 212, 0.15);
 
   /* 边框 */
   --dsw-alias-border-l1: rgba(90, 159, 212, 0.12);
@@ -75,10 +57,6 @@ body[data-dsh-cottage] {
   --dsw-alias-button-primary-hover: #4a8fc4;
   --dsw-alias-button-elevated-fill: rgba(255, 255, 255, 0.65);
   --dsw-alias-button-contrast-fill: #3a6ea5;
-
-  /* 状态色 */
-  --dsw-alias-state-success-primary: #5a8a3c;
-  --dsw-alias-state-warn-primary: #d4922a;
 
   /* 侧边栏 */
   --dsw-specific-sidebar-fill: rgba(248, 245, 240, 0.42);
@@ -117,10 +95,6 @@ body[data-dsh-cottage][data-ds-dark-theme] {
   --dsw-alias-bg-layer-3: rgba(30, 34, 42, 0.46);
   --dsw-alias-bg-overlay: rgba(20, 24, 32, 0.72);
   --dsw-alias-bg-mask-1: rgba(0, 0, 0, 0.55);
-  --dsw-alias-bg-mask-2: rgba(0, 0, 0, 0.25);
-  --dsw-alias-bg-mask-3: rgba(0, 0, 0, 0.5);
-  --dsw-alias-bg-skeleton: rgba(122, 184, 232, 0.08);
-  --dsw-alias-bg-multi-select: rgba(122, 184, 232, 0.12);
 
   --dsw-alias-border-l1: rgba(122, 184, 232, 0.10);
   --dsw-alias-border-l2: rgba(122, 184, 232, 0.16);
@@ -140,9 +114,6 @@ body[data-dsh-cottage][data-ds-dark-theme] {
   --dsw-alias-button-elevated-fill: rgba(30, 34, 42, 0.62);
   --dsw-alias-button-contrast-fill: #7ab8e8;
 
-  --dsw-alias-state-success-primary: #6aaa4c;
-  --dsw-alias-state-warn-primary: #e8a83c;
-
   --dsw-specific-sidebar-fill: rgba(22, 26, 34, 0.52);
   --dsw-specific-bubble: rgba(26, 30, 38, 0.50);
   --dsw-specific-bubble-highlight: rgba(122, 184, 232, 0.12);
@@ -156,7 +127,6 @@ body[data-dsh-cottage][data-ds-dark-theme] {
   --dsw-alias-toast-bg: rgba(30, 38, 50, 0.92);
   --dsw-alias-tooltip-bg: rgba(22, 26, 34, 0.95);
 }
-
 
 /* ============================================
    中央聊天区：父容器全透明，壁纸全显示
@@ -175,16 +145,17 @@ body[data-dsh-cottage] .pI_x6G_frame {
 }
 
 /* ============================================
-   消息文本列：与输入框等宽、同圆角、同透明度
-   背景挂在视口固定的滚动容器（scrollBody）上：
-   内容在面板内滚动，上下圆角始终可见；
-   消息内容仍保持 748px（--dsh-chat-content-width）
+   消息文本列：与输入框等宽、同透明度（直角）
+   背景挂在视口固定的滚动容器（scrollBody）上，
+   左右边缘 2px 渐变淡出；
+   消息内容保持 748px（--dsh-chat-content-width）
    ============================================ */
 /* width:100% + max-width：作为 flex 子项带 margin:0 auto 时不会被拉伸，
    若只靠 max-width 宽度会退化到内容宽度（加载历史时缩成窄条） */
-body[data-dsh-cottage] .wSkVaW_scrollBody {
+body[data-dsh-cottage]:not(:has(.qBU-ya_root)) .wSkVaW_scrollBody {
   width: 100%;
-  max-width: var(--dsh-composer-card-max-width);
+  /* 背景与输入座位同宽（812px）；文本列有 max-width:748 自行封顶 */
+  max-width: calc(var(--dsh-composer-card-max-width) + 2 * var(--dsh-composer-side-clearance));
   margin: 0 auto;
   /* 左右边缘渐变淡出，避免白面板与壁纸硬切（中间仍为 85% 不透明） */
   background-color: transparent;
@@ -203,11 +174,9 @@ body[data-dsh-cottage] .wSkVaW_root[data-phase="hero"] .wSkVaW_scrollBody {
   background: transparent;
 }
 
-/* 滚动区内边距收窄到 16px，让消息内容正好 748px
-   （默认 32px 会把内容挤窄到 716px） */
+/* 滚动区内边距收窄到 16px，让消息内容正好 748px（默认 32px 会挤窄） */
 body[data-dsh-cottage] .Md3f7G_scroll {
   padding: 16px;
-  /* Simplified padding - no longer needs complex calculation */
 }
 
 /* ============================================
@@ -219,7 +188,8 @@ body[data-dsh-cottage] .Md3f7G_scroll {
    ============================================ */
 body[data-dsh-cottage] .wSkVaW_root[data-phase="active"] .wSkVaW_composerSeat {
   width: 100%;
-  max-width: var(--dsh-composer-card-max-width);
+  /* 比消息面板宽 32px（= 卡片左右内边距），让输入卡恢复 dsh 默认 780px */
+  max-width: calc(var(--dsh-composer-card-max-width) + 2 * var(--dsh-composer-side-clearance));
   margin: 0 auto;
   background-color: transparent;
   background-image: linear-gradient(to right,
@@ -239,10 +209,13 @@ body[data-dsh-cottage] .FJxK0a_root {
   font-size: 12px;
 }
 
-/* 原生"回到底部"按钮：保留 dsh 的滚动监听，但按钮本体
-   用皮肤自绘的居中版本（见 build-client.js），原生槽隐藏 */
-body[data-dsh-cottage] .Md3f7G_toBottomSlot {
-  display: none;
+/* 原生"回到底部"按钮：滚动容器保持为 scrollBody，原生显隐逻辑
+   有效；仅改为水平居中、贴输入框上方 16px（默认右对齐且按
+   152px 输入框高度预留偏移） */
+body[data-dsh-cottage] [data-conversation-scroll] .Md3f7G_toBottomSlot {
+  bottom: 16px;
+  justify-content: center;
+  padding-right: 0;
 }
 
 /* ============================================
@@ -281,16 +254,6 @@ body[data-dsh-cottage] .hHd-Xa_logoRow > button:last-child {
 }
 
 /* ============================================
-   按钮美化
-   ============================================ */
-
-/* 主按钮 */
-body[data-dsh-cottage] button[aria-pressed],
-body[data-dsh-cottage] [class*="sendButton"] {
-  transition: background 0.2s, box-shadow 0.2s;
-}
-
-/* ============================================
    滚动条美化
    ============================================ */
 body[data-dsh-cottage] ::-webkit-scrollbar {
@@ -306,14 +269,14 @@ body[data-dsh-cottage] ::-webkit-scrollbar-thumb {
 body[data-dsh-cottage] ::-webkit-scrollbar-thumb:hover {
   background: rgba(90, 159, 212, 0.5);
 }
-
 /* ============================================
-   轨迹视图（点"轨迹"后展示的一切）：
-   :has() 检测到轨迹根 .qBU-ya_root 存在时，
-   在 body 层恢复 dsh 原始 token —— 轨迹根、内部
-   各面板、以及弹层/菜单等 portal 渲染全部保持默认
+   轨迹页（中间主区域，.qBU-ya_root）：作用域还原
+   dsh 默认 token —— 页面本身保持 dsh 默认外观；
+   其余区域（侧栏/顶栏/输入区等）皮肤照常生效。
+   注意：从轨迹页打开的弹层挂在 body 上，会继承
+   皮肤 token（玻璃效果），此为已知取舍
    ============================================ */
-body[data-dsh-cottage]:has(.qBU-ya_root) {
+body[data-dsh-cottage] .qBU-ya_root {
   --dsw-alias-bg-base: var(--dsw-static-neutral-bluish-00);
   --dsw-alias-bg-layer-1: var(--dsw-static-neutral-bluish-00);
   --dsw-alias-bg-layer-2: var(--dsw-static-neutral-bluish-00);
@@ -355,7 +318,7 @@ body[data-dsh-cottage]:has(.qBU-ya_root) {
   --dsw-specific-sidebar-fill: var(--dsw-static-neutral-bluish-50);
 }
 
-body[data-dsh-cottage][data-ds-dark-theme]:has(.qBU-ya_root) {
+body[data-dsh-cottage][data-ds-dark-theme] .qBU-ya_root {
   --dsw-alias-bg-base: var(--dsw-static-neutral-bluish-950);
   --dsw-alias-bg-layer-1: var(--dsw-static-neutral-bluish-875);
   --dsw-alias-bg-layer-2: var(--dsw-static-neutral-bluish-850);
@@ -397,36 +360,10 @@ body[data-dsh-cottage][data-ds-dark-theme]:has(.qBU-ya_root) {
   --dsw-specific-sidebar-fill: var(--dsw-static-neutral-bluish-900);
 }
 
-/* 轨迹模式下解除皮肤布局约束，恢复 dsh 默认结构 */
-body[data-dsh-cottage]:has(.qBU-ya_root) .pI_x6G_frame {
-  background: var(--dsw-alias-bg-base);
-}
-body[data-dsh-cottage]:has(.qBU-ya_root) .wSkVaW_scrollBody {
-  max-width: none;
-  margin: 0;
-  background: transparent;
-}
-body[data-dsh-cottage]:has(.qBU-ya_root) .pI_x6G_sidebarCol,
-body[data-dsh-cottage]:has(.qBU-ya_root) .hHd-Xa_root {
-  background: var(--dsw-specific-sidebar-fill);
-}
-body[data-dsh-cottage]:has(.qBU-ya_root) .qDHVXG_fade {
-  display: block;
-}
-
-/* 轨迹模式下滚动条滑块还原默认颜色 */
-body[data-dsh-cottage]:has(.qBU-ya_root) ::-webkit-scrollbar-thumb {
+/* 轨迹页内滚动条滑块还原默认颜色 */
+body[data-dsh-cottage] .qBU-ya_root ::-webkit-scrollbar-thumb {
   background: var(--dsw-alias-scrollbar-bg-l2);
 }
-body[data-dsh-cottage]:has(.qBU-ya_root) ::-webkit-scrollbar-thumb:hover {
+body[data-dsh-cottage] .qBU-ya_root ::-webkit-scrollbar-thumb:hover {
   background: var(--dsw-alias-scrollbar-hover-l2);
-}
-
-/* ============================================
-   减少动画偏好
-   ============================================ */
-@media (prefers-reduced-motion: reduce) {
-  body[data-dsh-cottage] * {
-    transition: none !important;
-  }
 }
