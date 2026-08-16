@@ -1,13 +1,14 @@
 /**
- * Archive panel for the Pastoral Cottage skin.
+ * Archive view for the Pastoral Cottage skin.
  *
- * Renders into the `shell.overlay` list slot (additive frame-wide layer) and
- * talks to the host-half API (src/index.ts). The sidebar entry button is
- * injected by src/client/index.ts next to the "Add workspace" button; the two
- * sides are bridged with a window CustomEvent.
+ * Renders IN PLACE over the workspace browser's tree region (mounted by
+ * src/client/index.ts into an absolute overlay container) — same layout
+ * vocabulary as the native list, just archived sessions. Talks to the
+ * host-half API (src/index.ts). The sidebar entry button (injected next to
+ * "Add workspace") toggles the view.
  *
- * Sorting follows the native workspace browser's "view options": the panel
- * reads `dsh.workspace.view.v5` (the browser's persisted view state) for its
+ * Sorting follows the native workspace browser's "view options": reads
+ * `dsh.workspace.view.v5` (the browser's persisted view state) for the
  * initial order and offers the same manual/updated toggle locally.
  */
 import { useCallback, useEffect, useState } from 'react'
@@ -62,8 +63,7 @@ function formatTime(iso: string | null): string {
   return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`
 }
 
-export function ArchivePanel(_props: unknown): React.ReactElement | null {
-  const [open, setOpen] = useState(false)
+export function ArchiveView({ onClose }: { onClose: () => void }): React.ReactElement {
   const [items, setItems] = useState<ArchivedItem[]>([])
   const [order, setOrder] = useState<'manual' | 'updated'>(readNativeOrder)
   const [busy, setBusy] = useState<string | null>(null)
@@ -78,17 +78,9 @@ export function ArchivePanel(_props: unknown): React.ReactElement | null {
     }
   }, [])
 
-  // Toggle bridge: the DOM-injected sidebar button dispatches this event.
+  // Load once on mount.
   useEffect(() => {
-    const onToggle = () => {
-      setOpen((v) => {
-        const next = !v
-        if (next) void refresh()
-        return next
-      })
-    }
-    window.addEventListener('cottage:archive-toggle', onToggle)
-    return () => window.removeEventListener('cottage:archive-toggle', onToggle)
+    void refresh()
   }, [refresh])
 
   const act = async (action: 'unarchive' | 'delete-session', item: ArchivedItem): Promise<void> => {
@@ -104,8 +96,6 @@ export function ArchivePanel(_props: unknown): React.ReactElement | null {
     }
   }
 
-  if (!open) return null
-
   const sorted =
     order === 'updated'
       ? [...items].sort((a, b) => (b.createdAt ?? '').localeCompare(a.createdAt ?? ''))
@@ -118,6 +108,9 @@ export function ArchivePanel(_props: unknown): React.ReactElement | null {
       onKeyDown={(e) => e.stopPropagation()}
     >
       <div className="cottage-archive-head">
+        <button type="button" className="cottage-archive-back" onClick={onClose}>
+          ← 返回
+        </button>
         <span className="cottage-archive-title">📦 归档会话 ({items.length})</span>
         <div className="cottage-archive-orders" role="group" aria-label="归档排序">
           <button
@@ -135,14 +128,7 @@ export function ArchivePanel(_props: unknown): React.ReactElement | null {
             按归档顺序
           </button>
         </div>
-        <button
-          type="button"
-          className="cottage-archive-close"
-          aria-label="关闭归档面板"
-          onClick={() => setOpen(false)}
-        >
-          ✕
-        </button>
+
       </div>
       {error && <div className="cottage-archive-error">{error}</div>}
       <ul className="cottage-archive-list">

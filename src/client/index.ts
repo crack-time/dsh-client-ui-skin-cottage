@@ -1,7 +1,7 @@
 import type { ClientContext } from '@deepseek-ai/dsh-client-runtime/client'
-// Loads the 'shell.overlay' SlotMap declaration (dsh-client-ui-layout).
-import type {} from '@deepseek-ai/dsh-client-ui-layout/client'
-import { ArchivePanel } from './archive.js'
+import { createElement } from 'react'
+import { createRoot } from 'react-dom/client'
+import { ArchiveView } from './archive.js'
 
 /**
  * Client entry for the Pastoral Cottage skin.
@@ -79,8 +79,8 @@ export function apply(ctx: ClientContext): void {
   }
 
   // Sidebar archive entry: a button injected right after the native
-  // "Add workspace" button (headerActions row). The panel itself lives in
-  // the shell.overlay slot (ArchivePanel); this button only toggles it.
+  // "Add workspace" button (headerActions row). It toggles the in-place
+  // archive view over the workspace tree region (ArchiveView).
   function ensureArchiveButton() {
     if (document.querySelector('[data-cottage-archive-btn]')) return
     const labels = ['添加工作区', 'Add workspace', 'Add workspace…']
@@ -93,9 +93,7 @@ export function apply(ctx: ClientContext): void {
         b.title = '归档会话'
         b.setAttribute('aria-label', '归档会话')
         b.textContent = '📦'
-        b.addEventListener('click', () =>
-          window.dispatchEvent(new CustomEvent('cottage:archive-toggle')),
-        )
+        b.addEventListener('click', () => toggleArchiveView())
         btn.insertAdjacentElement('afterend', b)
         return
       }
@@ -139,14 +137,38 @@ export function apply(ctx: ClientContext): void {
     }
   }
   onDomChange()
-  // Archive panel: additive shell.overlay entry (list slot). Fails soft —
-  // the skin's core behavior must not depend on slot availability.
-  try {
-    ctx.slots.register(
-      { name: 'shell.overlay', id: 'cottage-archive', order: 9999, registrant: 'ui-skin-cottage: archive panel' },
-      ArchivePanel,
-    )
-  } catch {}
+  // Archive view: mounted IN PLACE over the workspace tree region (the same
+  // spot the native session list occupies), toggled by the sidebar button.
+  let archiveRoot: ReturnType<typeof createRoot> | null = null
+  let archiveHost: HTMLElement | null = null
+  let archiveTarget: HTMLElement | null = null
+  function openArchiveView() {
+    const btn = document.querySelector<HTMLElement>('button[data-cottage-archive-btn]')
+    // headerActions → sectionHeader → the tree region (its next sibling).
+    const header = btn?.parentElement?.parentElement
+    const target = (header?.nextElementSibling as HTMLElement | null) ?? header?.parentElement
+    if (!target || archiveRoot) return
+    const host = document.createElement('div')
+    host.dataset.cottageArchiveView = ''
+    target.style.position = 'relative'
+    target.appendChild(host)
+    archiveTarget = target
+    archiveHost = host
+    archiveRoot = createRoot(host)
+    archiveRoot.render(createElement(ArchiveView, { onClose: closeArchiveView }))
+  }
+  function closeArchiveView() {
+    archiveRoot?.unmount()
+    archiveRoot = null
+    archiveHost?.remove()
+    archiveHost = null
+    if (archiveTarget) archiveTarget.style.position = ''
+    archiveTarget = null
+  }
+  function toggleArchiveView() {
+    if (archiveRoot) closeArchiveView()
+    else openArchiveView()
+  }
   const obs2 = new MutationObserver(onDomChange)
   obs2.observe(document.body, {
     childList: true,
@@ -163,6 +185,7 @@ export function apply(ctx: ClientContext): void {
       delete body.dataset.dshCottage
       body.style.removeProperty('background')
       document.querySelectorAll('[data-cottage-archive-btn]').forEach((el) => el.remove())
+      closeArchiveView()
     }, 'ui-skin-cottage: background')
   } catch {}
 }

@@ -3,4 +3,6 @@ export interface ArchivedItem {
     label: string;
     createdAt: string | null;
 }
-export declare function ArchivePanel(_props: unknown): React.ReactElement | null;
+export declare function ArchiveView({ onClose }: {
+    onClose: () => void;
+}): React.ReactElement;
