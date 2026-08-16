@@ -76,15 +76,25 @@ async function unarchive(ctx: Context, sessionId: string): Promise<void> {
 }
 
 /**
- * Delete an archived (cold) session: remove its durable log artifact, refresh
- * the registry header index (workspace accounts filter through it), and drop
- * the archive-set entry. Live sessions are refused — killing a session in the
- * in-memory store would corrupt the event-sourced state.
+ * Delete an archived session. Three cases:
+ *  - cold session: remove its durable log artifact, refresh the registry
+ *    header index, and drop the archive-set entry;
+ *  - live session (opened for browsing): remove it from the in-memory store
+ *    (no public dispose API — the enter() disposer is unreachable), then the
+ *    cold path. Only archived sessions reach this API, and archiving implies
+ *    quiescent work; deleting a genuinely running session is unsupported.
+ *  - orphan entry (no persisted header/log): just drop the archive-set entry.
  */
 async function deleteSession(ctx: Context, sessionId: string): Promise<void> {
-  const sessions = ctx.sessions as unknown as { get: (id: string) => unknown } | undefined
-  if (sessions?.get?.(sessionId)) {
-    throw Object.assign(new Error('session is live; stop it before deleting'), { code: 409 })
+  const sessions = ctx.sessions as unknown as {
+    get: (id: string) => unknown
+    store?: Map<string, unknown>
+  }
+  const live = sessions.get(sessionId)
+  if (live !== undefined) {
+    // No public dispose: remove the store entry directly (the enter()
+    // disposer does exactly this plus unhooking append publication).
+    sessions.store?.delete(sessionId)
   }
   const persistence = ctx.sessionPersistence as unknown as {
     list: () => Promise<Array<{ id: unknown; cwd?: string; createdAt?: number }>>
@@ -92,12 +102,13 @@ async function deleteSession(ctx: Context, sessionId: string): Promise<void> {
   }
   const headers = await persistence.list()
   const header = headers.find((h) => String(h.id) === sessionId)
-  if (!header) throw Object.assign(new Error('no such session'), { code: 404 })
-  const location = persistence.locate(header)
-  if (!location) {
-    throw Object.assign(new Error('persistence backend has no per-session artifact'), { code: 400 })
+  if (header) {
+    const location = persistence.locate(header)
+    if (!location) {
+      throw Object.assign(new Error('persistence backend has no per-session artifact'), { code: 400 })
+    }
+    await unlink(location.path)
   }
-  await unlink(location.path)
   // Refresh the registry's canonical-cwd header index so workspace accounts
   // (whose getters filter through it) stop listing the deleted session.
   const registry = ctx.workspaceRegistry as unknown as {
