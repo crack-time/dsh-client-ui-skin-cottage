@@ -29,6 +29,9 @@ importers:
       '@deepseek-ai/dsh-session-projection-cache':
         specifier: 0.1.0-rc.6
         version: 0.1.0-rc.6(dd975d4b23df368efdec0af129bff74d)
+      '@deepseek-ai/dsh-session-title':
+        specifier: 0.1.0-rc.6
+        version: 0.1.0-rc.6(d1255cd1c1cc892be642dda517b65e3c)
       '@deepseek-ai/dsh-workspace':
         specifier: 0.1.0-rc.6
         version: 0.1.0-rc.6(1cc52dfbc7fc17aad1b6b9c3711f64fc)

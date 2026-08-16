@@ -4,8 +4,9 @@ export interface ArchivedItem {
     title: string;
     /** Epoch-millis creation timestamp (host header.createdAt). */
     createdAt: number | null;
+    /** Last prompt time (activity) for the native 'updated' ordering; falls back to createdAt. */
+    updatedAt: number | null;
 }
-/** One workspace group, mirroring the native workspace-browser group shape. */
 export interface ArchivedGroup {
     workspaceId: string;
     title: string;
