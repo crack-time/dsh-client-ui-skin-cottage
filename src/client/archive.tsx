@@ -40,22 +40,48 @@ export interface ArchivedData {
 type OrderBy = 'manual' | 'updated'
 type GroupBy = 'workspace' | 'flat'
 
-/** Read the native workspace browser's persisted view state (same key the
- * view-options button writes). */
-function readViewState(): { groupBy: GroupBy; orderBy: OrderBy } {
+interface ViewState {
+  groupBy: GroupBy
+  orderBy: OrderBy
+  /** Collapsed workspace groups, shared with the native browser (same key). */
+  groupExpansion: Record<string, boolean>
+}
+
+/** Read the native workspace browser's persisted view state (the exact
+ * store the view-options button and group headers write). */
+function readViewState(): ViewState {
   try {
     const raw = localStorage.getItem(VIEW_KEY)
     if (raw) {
-      const parsed = JSON.parse(raw) as { groupBy?: unknown; orderBy?: unknown }
+      const parsed = JSON.parse(raw) as {
+        groupBy?: unknown
+        orderBy?: unknown
+        groupExpansion?: unknown
+      }
       return {
         groupBy: parsed.groupBy === 'flat' ? 'flat' : 'workspace',
         orderBy: parsed.orderBy === 'manual' ? 'manual' : 'updated',
+        groupExpansion:
+          parsed.groupExpansion && typeof parsed.groupExpansion === 'object'
+            ? (parsed.groupExpansion as Record<string, boolean>)
+            : {},
       }
     }
   } catch {
     // ignore
   }
-  return { groupBy: 'workspace', orderBy: 'updated' }
+  return { groupBy: 'workspace', orderBy: 'updated', groupExpansion: {} }
+}
+
+/** Persist a group-expansion change into the shared native store key. */
+function writeGroupExpansion(key: string, expanded: boolean): void {
+  try {
+    const state = readViewState()
+    const next = { ...state.groupExpansion, [key]: expanded }
+    localStorage.setItem(VIEW_KEY, JSON.stringify({ ...state, groupExpansion: next }))
+  } catch {
+    // ignore
+  }
 }
 
 async function getArchived(): Promise<ArchivedData> {
@@ -89,12 +115,17 @@ async function renameSession(sessionId: string, title: string): Promise<void> {
   }
 }
 
-function formatTime(ms: number | null): string {
+/** Relative time label mirroring the native row time (now/minutes/hours/days). */
+function timeAgo(ms: number | null): string {
   if (ms === null || ms === undefined) return ''
-  const d = new Date(ms)
-  if (Number.isNaN(d.getTime())) return ''
-  const pad = (n: number) => String(n).padStart(2, '0')
-  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`
+  const diff = Date.now() - ms
+  if (diff < 60_000) return '刚刚'
+  const minutes = Math.floor(diff / 60_000)
+  if (minutes < 60) return `${minutes} 分钟前`
+  const hours = Math.floor(minutes / 60)
+  if (hours < 24) return `${hours} 小时前`
+  const days = Math.floor(hours / 24)
+  return `${days} 天前`
 }
 
 /** Context menu item, mirroring the native row menu (rename / restore / delete). */
@@ -143,25 +174,26 @@ function SessionRow({
   busy,
   menuOpen,
   onMenuOpen,
-  onRename,
-  onUnarchive,
-  onDelete,
+  onOpen,
 }: {
   item: ArchivedItem
   busy: string | null
   menuOpen: boolean
   onMenuOpen: (e: React.MouseEvent) => void
-  onRename: (item: ArchivedItem) => void
-  onUnarchive: (item: ArchivedItem) => void
-  onDelete: (item: ArchivedItem) => void
+  onOpen: (sessionId: string) => void
 }): React.ReactElement {
   return (
-    <div className={'cottage-archive-item' + (menuOpen ? ' menu-open' : '')}>
+    <div
+      className={'cottage-archive-item' + (menuOpen ? ' menu-open' : '')}
+      role="treeitem"
+      aria-selected={false}
+      onClick={() => onOpen(item.sessionId)}
+    >
       <div className="cottage-archive-meta">
         <span className="cottage-archive-label" title={item.title}>
           {item.title}
         </span>
-        <span className="cottage-archive-time">{formatTime(item.createdAt)}</span>
+        <span className="cottage-archive-time">{timeAgo(item.updatedAt ?? item.createdAt)}</span>
       </div>
       <button
         type="button"
@@ -179,18 +211,33 @@ function SessionRow({
   )
 }
 
-export function ArchiveView({ onClose }: { onClose: () => void }): React.ReactElement {
+export function ArchiveView({
+  onClose,
+  onOpenSession,
+}: {
+  onClose: () => void
+  onOpenSession?: (sessionId: string) => void
+}): React.ReactElement {
   const [data, setData] = useState<ArchivedData>({ groups: [], ungrouped: [] })
   const [busy, setBusy] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
   const [view, setView] = useState<{ groupBy: GroupBy; orderBy: OrderBy }>(readViewState)
   const [menu, setMenu] = useState<{ item: ArchivedItem; x: number; y: number } | null>(null)
+  const [expanded, setExpanded] = useState<Record<string, boolean>>(() => readViewState().groupExpansion)
 
   // Mirror the native view-options button: poll the shared persisted store key.
   useEffect(() => {
     const timer = window.setInterval(() => {
       const next = readViewState()
-      setView((prev) => (prev.groupBy === next.groupBy && prev.orderBy === next.orderBy ? prev : next))
+      setView((prev) =>
+        prev.groupBy === next.groupBy && prev.orderBy === next.orderBy ? prev : next,
+      )
+      setExpanded((prev) => {
+        for (const key of Object.keys(next.groupExpansion)) {
+          if (prev[key] !== next.groupExpansion[key]) return { ...next.groupExpansion }
+        }
+        return prev
+      })
     }, 400)
     return () => window.clearInterval(timer)
   }, [])
@@ -293,33 +340,54 @@ export function ArchiveView({ onClose }: { onClose: () => void }): React.ReactEl
               busy={busy}
               menuOpen={menu?.item.sessionId === item.sessionId}
               onMenuOpen={(e) => openMenu(e, item)}
-              onRename={handleRename}
-              onUnarchive={(it) => void act('unarchive', it)}
-              onDelete={handleDelete}
+              onOpen={onOpenSession ?? (() => undefined)}
+              
+              
             />
           ))}
         {flat === null &&
-          data.groups.map((group) => (
-            <div key={group.workspaceId} className="cottage-archive-group">
-              <div className="cottage-archive-group-title">{group.title}</div>
-              {sortSessions(group.sessions).map((item) => (
-                <SessionRow
-                  key={item.sessionId}
-                  item={item}
-                  busy={busy}
-                  menuOpen={menu?.item.sessionId === item.sessionId}
-                  onMenuOpen={(e) => openMenu(e, item)}
-                  onRename={handleRename}
-                  onUnarchive={(it) => void act('unarchive', it)}
-                  onDelete={handleDelete}
-                />
-              ))}
-            </div>
-          ))}
+          data.groups.map((group) => {
+            const isExpanded = expanded[group.workspaceId] !== false
+            return (
+              <div key={group.workspaceId} className="cottage-archive-group">
+                <div
+                  className="cottage-archive-group-title"
+                  role="treeitem"
+                  aria-expanded={isExpanded}
+                  onClick={() => {
+                    const next = !isExpanded
+                    setExpanded((prev) => ({ ...prev, [group.workspaceId]: next }))
+                    writeGroupExpansion(group.workspaceId, next)
+                  }}
+                >
+                  <span className="cottage-archive-folder">{isExpanded ? '📂' : '📁'}</span>
+                  <span className={'cottage-archive-arrow' + (isExpanded ? ' open' : '')}>▸</span>
+                  <span className="cottage-archive-group-name">{group.title}</span>
+                </div>
+                {isExpanded &&
+                  sortSessions(group.sessions).map((item) => (
+                    <SessionRow
+                      key={item.sessionId}
+                      item={item}
+                      busy={busy}
+                      menuOpen={menu?.item.sessionId === item.sessionId}
+                      onMenuOpen={(e) => openMenu(e, item)}
+                      onOpen={onOpenSession ?? (() => undefined)}
+                      
+                      
+                    />
+                  ))}
+              </div>
+            )
+          })}
         {flat === null &&
           data.ungrouped.length > 0 && (
             <div className="cottage-archive-group">
-              <div className="cottage-archive-group-title">未分组</div>
+              <div className="cottage-archive-group-title" role="treeitem" aria-expanded>
+                <span className="cottage-archive-folder">📂</span>
+                <span className="cottage-archive-arrow open">▸</span>
+                <span className="cottage-archive-group-name">未分组</span>
+              </div>
               {sortSessions(data.ungrouped).map((item) => (
                 <SessionRow
                   key={item.sessionId}
@@ -327,9 +395,9 @@ export function ArchiveView({ onClose }: { onClose: () => void }): React.ReactEl
                   busy={busy}
                   menuOpen={menu?.item.sessionId === item.sessionId}
                   onMenuOpen={(e) => openMenu(e, item)}
-                  onRename={handleRename}
-                  onUnarchive={(it) => void act('unarchive', it)}
-                  onDelete={handleDelete}
+                  onOpen={onOpenSession ?? (() => undefined)}
+                  
+                  
                 />
               ))}
             </div>

@@ -16,6 +16,7 @@ export interface ArchivedData {
     groups: ArchivedGroup[];
     ungrouped: ArchivedItem[];
 }
-export declare function ArchiveView({ onClose }: {
+export declare function ArchiveView({ onClose, onOpenSession, }: {
     onClose: () => void;
+    onOpenSession?: (sessionId: string) => void;
 }): React.ReactElement;

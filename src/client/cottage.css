@@ -665,3 +665,44 @@ body[data-dsh-cottage] .cottage-menu button.danger {
 body[data-dsh-cottage] .cottage-menu button.danger:hover {
   background: rgba(200, 90, 90, 0.1);
 }
+
+/* 分组标题行：对齐原生 projectRow（可点击折叠、hover 背景、箭头旋转） */
+body[data-dsh-cottage] .cottage-archive-group-title {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  height: 32px;
+  padding: 0 8px;
+  border-radius: 8px;
+  cursor: pointer;
+  color: var(--dsw-alias-label-primary, #2b4259);
+  font-size: 13px;
+  transition: background 0.12s ease;
+}
+body[data-dsh-cottage] .cottage-archive-group-title:hover {
+  background: var(--dsw-alias-interactive-bg-hover, rgba(90, 159, 212, 0.1));
+}
+body[data-dsh-cottage] .cottage-archive-folder {
+  font-size: 14px;
+  line-height: 1;
+  flex: none;
+}
+body[data-dsh-cottage] .cottage-archive-arrow {
+  font-size: 10px;
+  color: var(--dsw-alias-label-secondary, #4a6a8c);
+  transform: rotate(0deg);
+  transition: transform 0.15s var(--ds-ease-in-out, ease);
+  flex: none;
+}
+body[data-dsh-cottage] .cottage-archive-arrow.open {
+  transform: rotate(90deg);
+}
+body[data-dsh-cottage] .cottage-archive-group-name {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+/* 会话行可点击 */
+body[data-dsh-cottage] .cottage-archive-item {
+  cursor: pointer;
+}

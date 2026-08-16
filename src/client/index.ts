@@ -155,7 +155,16 @@ export function apply(ctx: ClientContext): void {
     archiveTarget = target
     archiveHost = host
     archiveRoot = createRoot(host)
-    archiveRoot.render(createElement(ArchiveView, { onClose: closeArchiveView }))
+    archiveRoot.render(
+      createElement(ArchiveView, {
+        onClose: closeArchiveView,
+        onOpenSession: (id) => {
+          try {
+            ;(ctx as unknown as { sessions?: { open?: (sid: string) => void } }).sessions?.open?.(id)
+          } catch {}
+        },
+      }),
+    )
   }
   function closeArchiveView() {
     archiveRoot?.unmount()
