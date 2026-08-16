@@ -409,18 +409,6 @@ body[data-dsh-cottage] [data-cottage-archive-view] {
   background: transparent;
   overflow: hidden;
 }
-body[data-dsh-cottage] [data-cottage-archive-view] {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  flex-direction: column;
-  z-index: 100;
-  background: color-mix(in srgb, var(--dsw-alias-bg-1, #f7fafc) 92%, transparent);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-radius: 12px;
-  overflow: hidden;
-}
 body[data-dsh-cottage] .cottage-archive {
   display: flex;
   flex-direction: column;
