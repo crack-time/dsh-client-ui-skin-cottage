@@ -21,7 +21,9 @@
       "patch": "./cordis.patch.yml"
     },
     "client": {
-      "inject": [],
+      "inject": [
+        "sessions"
+      ],
       "platform": "web",
       "immediately": true
     }
