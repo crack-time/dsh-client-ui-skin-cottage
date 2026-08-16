@@ -400,12 +400,11 @@ body[data-dsh-cottage] [class*="_headerActions"] {
 }
 /* 覆盖层容器：absolute 铺满树区域 */
 body[data-dsh-cottage] [data-cottage-archive-view] {
-  position: absolute;
-  inset: 0;
+  /* 文档流占满树容器（原生树已隐藏），不再是覆盖层 */
   display: flex;
   flex-direction: column;
-  z-index: 100;
-  /* 无背景：与工作区树区域一样直接透出壁纸 */
+  flex: 1;
+  min-height: 0;
   background: transparent;
   overflow: hidden;
 }
