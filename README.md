@@ -7,7 +7,7 @@
 ## 功能
 
 ### 壁纸与整体氛围
-- 3840x2160 田园风格壁纸全屏铺底（base64 内嵌，无额外静态资源请求）
+- 3840x2160 田园风格壁纸全屏铺底（host 路由 serve，bundle 保持 20KB）
 - `#root` / 布局 frame 全透明，壁纸完全透出；明暗主题自动适配
 - 天空蓝品牌色、柔和边框、细滚动条；tooltip 深底白字（修复白底白字不可见问题）
 
@@ -28,7 +28,7 @@
 - 会话统计条加宽至与输入框同宽，完整显示轮次/步数/耗时等指标
 - 侧栏会话列表底部渐隐条移除；折叠按钮微调（不贴右缘）
 
-> 纯浏览器端插件：不注册宿主服务，卸载即完全恢复
+> 仅注册一个静态图片路由（bg.jpg），其余全部为浏览器端行为；卸载即完全恢复
 
 ## 安装
 
@@ -44,19 +44,23 @@ dsh plugin --profile web add "link:E:\path\to\dsh-client-ui-skin-cottage"
 #        - id: ui-skin-cottage
 #          name: '@crack/dsh-client-ui-skin-cottage'
 
-# 3. 重启 dsh web 并刷新浏览器
+# 3. 保存后 dsh 自动热重载（boot HMR 重读 patch），无需重启
 ```
 
-## 自定义
+## 开发
 
-编辑 `src/client/cottage.module.css`（样式）或替换 `assets/cottage-bg-b64.txt`（壁纸 base64），然后：
+需要 Node + pnpm。
 
 ```powershell
-node build-client.js   # 重建 lib/client.js
-# 重启 dsh web，刷新浏览器
+pnpm install          # 安装构建链（typescript / tsdown）
+pnpm run build        # 一次构建：tsc(host) + tsc(client) + tsdown
+pnpm run watch        # 监听模式：改 src/ 自动重建
+pnpm run typecheck    # 类型检查
 ```
 
-壁纸压缩：PowerShell + System.Drawing 将任意 JPEG 缩放到 3840x2160 质量 72 后转 base64 写入 `assets/cottage-bg-b64.txt`。
+- 编辑 `src/client/cottage.module.css`（样式）或 `src/client/index.ts`（浏览器端逻辑）
+- 替换 `assets/cottage-bg.jpg`（壁纸原图，由 host 路由 serve）
+- 构建完成后浏览器自动热替换（client-hmr，无需刷新/重启）
 
 ## 卸载
 
@@ -68,10 +72,14 @@ node build-client.js   # 重建 lib/client.js
 
 ```
 dsh-client-ui-skin-cottage/
+├── src/index.ts                    # host 面：注册 bg.jpg 路由
+├── src/client/index.ts             # 浏览器端逻辑（apply）
 ├── src/client/cottage.module.css   # 皮肤 CSS 源文件（构建时注入）
-├── assets/cottage-bg-b64.txt       # 壁纸 base64（4K JPEG）
-├── assets/cottage-bg.jpg           # 壁纸原图备份
-├── build-client.js                 # 构建脚本：CSS + base64 -> lib/client.js
+├── assets/cottage-bg.jpg           # 壁纸原图（host 路由 serve）
+├── scripts/cottage-inline-plugin.mjs  # tsdown 插件：内联 CSS
+├── scripts/dev.mjs                 # watch 并行构建
+├── tsconfig.json / tsconfig.client.json  # host/client 双 program
+├── tsdown.config.ts                # client bundle 协议构建
 ├── lib/client.js                   # 浏览器端 bundle（已构建，clone 即用）
 ├── lib/index.js                    # 宿主端空入口
 ├── cordis.patch.yml                # 插件自带注册 patch（参考）

@@ -1,0 +1,25 @@
+// tsdown client bundle protocol (mirrors DSH packages/client/tsdown.client.ts):
+// input  = lib/client/index.js (tsc client program output)
+// output = lib/client.js (CJS closure-factory, window.__ModuleLoader__.load format)
+import { defineConfig } from 'tsdown'
+import { cottageInlinePlugin } from './scripts/cottage-inline-plugin.mjs'
+
+export default defineConfig({
+  name: '@crack/dsh-client-ui-skin-cottage/client',
+  entry: { client: 'lib/client/index.js' },
+  outDir: 'lib',
+  format: 'cjs',
+  platform: 'browser',
+  dts: false,
+  sourcemap: true,
+  clean: false,
+  minify: false,
+  hash: false,
+  plugins: [cottageInlinePlugin()],
+  outputOptions: {
+    entryFileNames: 'client.js',
+    banner: 'window.__ModuleLoader__.load({ id: "@crack/dsh-client-ui-skin-cottage", factory: (require) => {',
+    intro: 'var module = { exports: {} }; var exports = module.exports;',
+    footer: 'return module.exports; } });',
+  },
+})
