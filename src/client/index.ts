@@ -151,6 +151,7 @@ export function apply(ctx: ClientContext): void {
     if (!target || archiveRoot) return
     const host = document.createElement('div')
     host.dataset.cottageArchiveView = ''
+    target.style.position = 'relative'
     // Hide the native tree content (the overlay is fully transparent, so the
     // native rows must not show through underneath).
     hiddenNative = []
@@ -178,6 +179,7 @@ export function apply(ctx: ClientContext): void {
     archiveRoot = null
     archiveHost?.remove()
     archiveHost = null
+    if (archiveTarget) archiveTarget.style.position = ''
     archiveTarget = null
     for (const el of hiddenNative) el.style.display = ''
     hiddenNative = []
