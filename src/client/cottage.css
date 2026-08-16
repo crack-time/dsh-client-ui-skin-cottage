@@ -405,10 +405,10 @@ body[data-dsh-cottage] [data-cottage-archive-view] {
   display: flex;
   flex-direction: column;
   z-index: 100;
-  background: color-mix(in srgb, var(--dsw-alias-bg-1, #f7fafc) 92%, transparent);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border-radius: 12px;
+  /* 与侧边栏同一毛玻璃底（工作区树区域透出的就是它） */
+  background: var(--dsw-specific-sidebar-fill, rgba(248, 245, 240, 0.42));
+  backdrop-filter: blur(16px) saturate(1.2);
+  -webkit-backdrop-filter: blur(16px) saturate(1.2);
   overflow: hidden;
 }
 body[data-dsh-cottage] [data-cottage-archive-view] {
