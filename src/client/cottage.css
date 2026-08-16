@@ -561,9 +561,6 @@ body[data-dsh-cottage] .cottage-archive-folder {
   align-items: center;
   display: inline-flex;
 }
-body[data-dsh-cottage] .cottage-archive-folder.open {
-  color: var(--dsw-alias-state-business-primary, #5a9fd4);
-}
 /* 箭头：默认隐藏，hover 时显示并隐藏文件夹（同原生） */
 body[data-dsh-cottage] .cottage-archive-chevron {
   width: 16px;
