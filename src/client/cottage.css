@@ -483,6 +483,23 @@ body[data-dsh-cottage] .cottage-archive-list {
   flex: 1;
   min-height: 0;
 }
+
+body[data-dsh-cottage] .cottage-archive-group {
+  margin-top: 4px;
+}
+body[data-dsh-cottage] .cottage-archive-group-title {
+  padding: 6px 8px 4px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--dsw-alias-label-secondary, #4a6a8c);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+body[data-dsh-cottage] .cottage-archive-list > .cottage-archive-group:first-child {
+  margin-top: 0;
+}
+
 body[data-dsh-cottage] .cottage-archive-empty {
   padding: 22px 12px;
   text-align: center;

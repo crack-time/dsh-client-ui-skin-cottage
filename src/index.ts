@@ -118,12 +118,20 @@ async function deleteSession(ctx: Context, sessionId: string): Promise<void> {
 }
 
 /**
- * Archived list: archive-set ids joined with persisted headers. Display
- * title follows the native displayTitle fallback chain: durable title
- * projection (sessionTitle) → cwd basename → session id prefix.
+ * Archived list grouped by owning workspace (registry display order; archived
+ * sessions keep their workspace account slot, so unarchiving restores the
+ * position). Sessions without a workspace land in "ungrouped". Display title
+ * follows the native displayTitle fallback chain: durable title projection
+ * (sessionTitle) → cwd basename → session id prefix.
  */
-async function listArchived(ctx: Context): Promise<Array<{ sessionId: string; title: string; createdAt: string | null }>> {
-  const registry = ctx.workspaceRegistry as unknown as { archivedSessionIds: readonly string[] }
+async function listArchived(ctx: Context): Promise<{
+  groups: Array<{ workspaceId: string; title: string; sessions: ArchivedSession[] }>
+  ungrouped: ArchivedSession[]
+}> {
+  const registry = ctx.workspaceRegistry as unknown as {
+    archivedSessionIds: readonly string[]
+    list: () => Array<{ id: string; title: string; sessionIds: readonly string[] }>
+  }
   const persistence = ctx.sessionPersistence as unknown as {
     list: () => Promise<Array<{ id: unknown; cwd?: string; createdAt?: string }>>
   }
@@ -133,7 +141,7 @@ async function listArchived(ctx: Context): Promise<Array<{ sessionId: string; ti
   const archived = registry.archivedSessionIds
   const headers = await persistence.list()
   const byId = new Map(headers.map((h) => [String(h.id), h]))
-  return archived.map((id) => {
+  const makeItem = (id: string): ArchivedSession => {
     const header = byId.get(id)
     const projected = header ? cache.cachedSnapshot(header)?.values?.title : undefined
     const cwd = header?.cwd
@@ -144,7 +152,30 @@ async function listArchived(ctx: Context): Promise<Array<{ sessionId: string; ti
           ? basename(String(cwd).replace(/[\\/]+$/, ''))
           : id.slice(0, 8)
     return { sessionId: id, title, createdAt: header?.createdAt ?? null }
-  })
+  }
+  const groups: Array<{ workspaceId: string; title: string; sessions: ArchivedSession[] }> = []
+  const ungrouped: ArchivedSession[] = []
+  const placed = new Set<string>()
+  for (const workspace of registry.list()) {
+    const sessions = workspace.sessionIds
+      .filter((id) => archived.includes(id))
+      .map(makeItem)
+    if (sessions.length > 0) {
+      groups.push({ workspaceId: workspace.id, title: workspace.title, sessions })
+      for (const s of sessions) placed.add(s.sessionId)
+    }
+  }
+  for (const id of archived) {
+    if (!placed.has(id)) ungrouped.push(makeItem(id))
+  }
+  return { groups, ungrouped }
+}
+
+/** One archived session row (wire shape for /api/archived). */
+interface ArchivedSession {
+  sessionId: string
+  title: string
+  createdAt: string | null
 }
 
 async function handleApi(ctx: Context, req: IncomingMessage, res: ServerResponse): Promise<void> {
@@ -152,7 +183,7 @@ async function handleApi(ctx: Context, req: IncomingMessage, res: ServerResponse
   const method = req.method ?? 'GET'
   try {
     if (method === 'GET' && url.pathname === API_PREFIX + '/archived') {
-      return sendJson(res, 200, { items: await listArchived(ctx) })
+      return sendJson(res, 200, await listArchived(ctx))
     }
     if (method === 'POST' && (url.pathname === API_PREFIX + '/unarchive' || url.pathname === API_PREFIX + '/delete-session')) {
       const body = JSON.parse((await readBody(req)) || '{}') as { sessionId?: unknown }

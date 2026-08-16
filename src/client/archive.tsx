@@ -23,11 +23,22 @@ export interface ArchivedItem {
   createdAt: string | null
 }
 
-async function getArchived(): Promise<ArchivedItem[]> {
+/** One workspace group, mirroring the native workspace-browser group shape. */
+export interface ArchivedGroup {
+  workspaceId: string
+  title: string
+  sessions: ArchivedItem[]
+}
+
+export interface ArchivedData {
+  groups: ArchivedGroup[]
+  ungrouped: ArchivedItem[]
+}
+
+async function getArchived(): Promise<ArchivedData> {
   const res = await fetch(API + '/archived')
   if (!res.ok) throw new Error('加载归档列表失败')
-  const data = (await res.json()) as { items: ArchivedItem[] }
-  return data.items ?? []
+  return (await res.json()) as ArchivedData
 }
 
 async function postAction(action: 'unarchive' | 'delete-session', sessionId: string): Promise<void> {
@@ -56,6 +67,44 @@ function readNativeOrder(): 'manual' | 'updated' {
   return 'updated'
 }
 
+function SessionRow({
+  item,
+  busy,
+  onAct,
+}: {
+  item: ArchivedItem
+  busy: string | null
+  onAct: (action: 'unarchive' | 'delete-session', item: ArchivedItem) => Promise<void>
+}): React.ReactElement {
+  return (
+    <div className="cottage-archive-item">
+      <div className="cottage-archive-meta">
+        <span className="cottage-archive-label" title={item.title}>
+          {item.title}
+        </span>
+        <span className="cottage-archive-time">{formatTime(item.createdAt)}</span>
+      </div>
+      <div className="cottage-archive-actions">
+        <button type="button" disabled={busy === item.sessionId} onClick={() => void onAct('unarchive', item)}>
+          恢复
+        </button>
+        <button
+          type="button"
+          className="danger"
+          disabled={busy === item.sessionId}
+          onClick={() => {
+            if (window.confirm(`删除会话「${item.title}」？\n会话日志将被移除，此操作不可恢复。`)) {
+              void onAct('delete-session', item)
+            }
+          }}
+        >
+          删除
+        </button>
+      </div>
+    </div>
+  )
+}
+
 function formatTime(iso: string | null): string {
   if (!iso) return ''
   const d = new Date(iso)
@@ -65,14 +114,14 @@ function formatTime(iso: string | null): string {
 }
 
 export function ArchiveView({ onClose }: { onClose: () => void }): React.ReactElement {
-  const [items, setItems] = useState<ArchivedItem[]>([])
+  const [data, setData] = useState<ArchivedData>({ groups: [], ungrouped: [] })
   const [order, setOrder] = useState<'manual' | 'updated'>(readNativeOrder)
   const [busy, setBusy] = useState<string | null>(null)
   const [error, setError] = useState<string | null>(null)
 
   const refresh = useCallback(async () => {
     try {
-      setItems(await getArchived())
+      setData(await getArchived())
       setError(null)
     } catch (e) {
       setError(e instanceof Error ? e.message : String(e))
@@ -97,10 +146,11 @@ export function ArchiveView({ onClose }: { onClose: () => void }): React.ReactEl
     }
   }
 
-  const sorted =
+  const sortSessions = (sessions: ArchivedItem[]): ArchivedItem[] =>
     order === 'updated'
-      ? [...items].sort((a, b) => (b.createdAt ?? '').localeCompare(a.createdAt ?? ''))
-      : items
+      ? [...sessions].sort((a, b) => (b.createdAt ?? '').localeCompare(a.createdAt ?? ''))
+      : sessions
+  const total = data.groups.reduce((n, g) => n + g.sessions.length, 0) + data.ungrouped.length
 
   return (
     <div
@@ -112,7 +162,7 @@ export function ArchiveView({ onClose }: { onClose: () => void }): React.ReactEl
         <button type="button" className="cottage-archive-back" onClick={onClose}>
           ← 返回
         </button>
-        <span className="cottage-archive-title">📦 归档会话 ({items.length})</span>
+        <span className="cottage-archive-title">📦 归档会话 ({total})</span>
         <div className="cottage-archive-orders" role="group" aria-label="归档排序">
           <button
             type="button"
@@ -132,40 +182,25 @@ export function ArchiveView({ onClose }: { onClose: () => void }): React.ReactEl
 
       </div>
       {error && <div className="cottage-archive-error">{error}</div>}
-      <ul className="cottage-archive-list">
-        {sorted.length === 0 && <li className="cottage-archive-empty">暂无归档会话</li>}
-        {sorted.map((item) => (
-          <li key={item.sessionId} className="cottage-archive-item">
-            <div className="cottage-archive-meta">
-              <span className="cottage-archive-label" title={item.title}>
-                {item.title}
-              </span>
-              <span className="cottage-archive-time">{formatTime(item.createdAt)}</span>
-            </div>
-            <div className="cottage-archive-actions">
-              <button
-                type="button"
-                disabled={busy === item.sessionId}
-                onClick={() => void act('unarchive', item)}
-              >
-                恢复
-              </button>
-              <button
-                type="button"
-                className="danger"
-                disabled={busy === item.sessionId}
-                onClick={() => {
-                  if (window.confirm(`删除会话「${item.title}」？\n会话日志将被移除，此操作不可恢复。`)) {
-                    void act('delete-session', item)
-                  }
-                }}
-              >
-                删除
-              </button>
-            </div>
-          </li>
+      <div className="cottage-archive-list">
+        {total === 0 && <div className="cottage-archive-empty">暂无归档会话</div>}
+        {data.groups.map((group) => (
+          <div key={group.workspaceId} className="cottage-archive-group">
+            <div className="cottage-archive-group-title">{group.title}</div>
+            {sortSessions(group.sessions).map((item) => (
+              <SessionRow key={item.sessionId} item={item} busy={busy} onAct={act} />
+            ))}
+          </div>
         ))}
-      </ul>
+        {data.ungrouped.length > 0 && (
+          <div className="cottage-archive-group">
+            <div className="cottage-archive-group-title">未分组</div>
+            {sortSessions(data.ungrouped).map((item) => (
+              <SessionRow key={item.sessionId} item={item} busy={busy} onAct={act} />
+            ))}
+          </div>
+        )}
+      </div>
     </div>
   )
 }
