@@ -20,7 +20,8 @@ export interface ArchivedItem {
   sessionId: string
   /** Native displayTitle fallback chain: durable title → cwd basename → id prefix. */
   title: string
-  createdAt: string | null
+  /** Epoch-millis creation timestamp (host header.createdAt). */
+  createdAt: number | null
 }
 
 /** One workspace group, mirroring the native workspace-browser group shape. */
@@ -38,7 +39,8 @@ export interface ArchivedData {
 async function getArchived(): Promise<ArchivedData> {
   const res = await fetch(API + '/archived')
   if (!res.ok) throw new Error('加载归档列表失败')
-  return (await res.json()) as ArchivedData
+  const data = (await res.json()) as Partial<ArchivedData>
+  return { groups: data.groups ?? [], ungrouped: data.ungrouped ?? [] }
 }
 
 async function postAction(action: 'unarchive' | 'delete-session', sessionId: string): Promise<void> {
@@ -105,9 +107,9 @@ function SessionRow({
   )
 }
 
-function formatTime(iso: string | null): string {
-  if (!iso) return ''
-  const d = new Date(iso)
+function formatTime(ms: number | null): string {
+  if (ms === null || ms === undefined) return ''
+  const d = new Date(ms)
   if (Number.isNaN(d.getTime())) return ''
   const pad = (n: number) => String(n).padStart(2, '0')
   return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}`
@@ -148,7 +150,7 @@ export function ArchiveView({ onClose }: { onClose: () => void }): React.ReactEl
 
   const sortSessions = (sessions: ArchivedItem[]): ArchivedItem[] =>
     order === 'updated'
-      ? [...sessions].sort((a, b) => (b.createdAt ?? '').localeCompare(a.createdAt ?? ''))
+      ? [...sessions].sort((a, b) => (b.createdAt ?? 0) - (a.createdAt ?? 0))
       : sessions
   const total = data.groups.reduce((n, g) => n + g.sessions.length, 0) + data.ungrouped.length
 

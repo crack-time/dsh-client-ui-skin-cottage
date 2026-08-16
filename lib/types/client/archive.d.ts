@@ -2,7 +2,8 @@ export interface ArchivedItem {
     sessionId: string;
     /** Native displayTitle fallback chain: durable title → cwd basename → id prefix. */
     title: string;
-    createdAt: string | null;
+    /** Epoch-millis creation timestamp (host header.createdAt). */
+    createdAt: number | null;
 }
 /** One workspace group, mirroring the native workspace-browser group shape. */
 export interface ArchivedGroup {
