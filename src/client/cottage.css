@@ -411,214 +411,24 @@ body[data-dsh-cottage] [data-cottage-archive-view] {
   border-radius: 12px;
   overflow: hidden;
 }
+body[data-dsh-cottage] [data-cottage-archive-view] {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  z-index: 100;
+  background: color-mix(in srgb, var(--dsw-alias-bg-1, #f7fafc) 92%, transparent);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: 12px;
+  overflow: hidden;
+}
 body[data-dsh-cottage] .cottage-archive {
   display: flex;
   flex-direction: column;
   height: 100%;
   min-height: 0;
   color: #2b4259;
-}
-body[data-dsh-cottage] .cottage-archive-head {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  height: 36px;
-  padding: 0 10px;
-  flex: none;
-  border-bottom: 1px solid var(--dsw-alias-divider, rgba(90, 159, 212, 0.25));
-  background: var(--dsw-alias-bg-2, rgba(90, 159, 212, 0.12));
-}
-body[data-dsh-cottage] .cottage-archive-back {
-  border: none;
-  background: transparent;
-  color: #2f6ea5;
-  font-size: 12px;
-  padding: 3px 8px;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background 0.15s ease;
-}
-body[data-dsh-cottage] .cottage-archive-back:hover {
-  background: rgba(90, 159, 212, 0.18);
-}
-body[data-dsh-cottage] .cottage-archive-title {
-  font-weight: 600;
-  font-size: 13px;
-  flex: 1;
-  white-space: nowrap;
-}
-body[data-dsh-cottage] .cottage-archive-orders {
-  display: flex;
-  gap: 2px;
-}
-body[data-dsh-cottage] .cottage-archive-orders button {
-  border: none;
-  background: transparent;
-  color: #4a6a8c;
-  font-size: 11px;
-  padding: 3px 8px;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: background 0.15s ease;
-}
-body[data-dsh-cottage] .cottage-archive-orders button:hover {
-  background: rgba(90, 159, 212, 0.18);
-}
-body[data-dsh-cottage] .cottage-archive-orders button.on {
-  background: #5a9fd4;
-  color: #fff;
-}
-body[data-dsh-cottage] .cottage-archive-error {
-  padding: 8px 10px;
-  font-size: 12px;
-  color: #a05a5a;
-  background: rgba(200, 90, 90, 0.1);
-  border-bottom: 1px solid rgba(200, 90, 90, 0.2);
-}
-body[data-dsh-cottage] .cottage-archive-list {
-  list-style: none;
-  margin: 0;
-  padding: 6px;
-  overflow-y: auto;
-  flex: 1;
-  min-height: 0;
-}
-
-body[data-dsh-cottage] .cottage-archive-group {
-  margin-top: 4px;
-}
-body[data-dsh-cottage] .cottage-archive-group-title {
-  padding: 6px 8px 4px;
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--dsw-alias-label-secondary, #4a6a8c);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-body[data-dsh-cottage] .cottage-archive-list > .cottage-archive-group:first-child {
-  margin-top: 0;
-}
-
-body[data-dsh-cottage] .cottage-archive-empty {
-  padding: 22px 12px;
-  text-align: center;
-  color: #8aa3ba;
-  font-size: 12px;
-}
-/* 行：与原生工作区会话行同高、同圆角、同 hover 背景 */
-body[data-dsh-cottage] .cottage-archive-item {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  height: 32px;
-  padding: 0 8px;
-  border-radius: 8px;
-  color: var(--dsw-alias-label-primary, #2b4259);
-  transition: background 0.12s ease;
-}
-body[data-dsh-cottage] .cottage-archive-item:hover {
-  background: var(--dsw-alias-interactive-bg-hover, rgba(90, 159, 212, 0.1));
-}
-body[data-dsh-cottage] .cottage-archive-meta {
-  flex: 1;
-  min-width: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-body[data-dsh-cottage] .cottage-archive-label {
-  font-size: 13px;
-  color: var(--dsw-alias-label-primary, #2b4259);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-body[data-dsh-cottage] .cottage-archive-time {
-  font-size: 11px;
-  color: var(--dsw-alias-label-tertiary, #8aa3ba);
-}
-body[data-dsh-cottage] .cottage-archive-actions {
-  display: flex;
-  gap: 6px;
-  flex-shrink: 0;
-}
-body[data-dsh-cottage] .cottage-archive-actions button {
-  border: 1px solid rgba(90, 159, 212, 0.4);
-  background: rgba(90, 159, 212, 0.1);
-  color: #2f6ea5;
-  font-size: 11px;
-  padding: 3px 10px;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.15s ease;
-}
-body[data-dsh-cottage] .cottage-archive-actions button:hover:not(:disabled) {
-  background: #5a9fd4;
-  color: #fff;
-}
-body[data-dsh-cottage] .cottage-archive-actions button.danger {
-  border-color: rgba(200, 90, 90, 0.4);
-  background: rgba(200, 90, 90, 0.08);
-  color: #a05a5a;
-}
-body[data-dsh-cottage] .cottage-archive-actions button.danger:hover:not(:disabled) {
-  background: #c05a5a;
-  color: #fff;
-}
-body[data-dsh-cottage] .cottage-archive-actions button:disabled {
-  opacity: 0.45;
-  cursor: default;
-}
-/* 侧边栏归档入口按钮（添加工作区右侧，第 4 个按钮） */
-body[data-dsh-cottage] button[data-cottage-archive-btn] {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 28px;
-  height: 28px;
-  padding: 0;
-  border: none;
-  background: transparent;
-  border-radius: 50%;
-  font-size: 15px;
-  line-height: 1;
-  cursor: pointer;
-  transition: background 0.15s ease, transform 0.1s ease;
-  flex-shrink: 0;
-}
-body[data-dsh-cottage] button[data-cottage-archive-btn]:hover {
-  background: rgba(90, 159, 212, 0.18);
-}
-body[data-dsh-cottage] button[data-cottage-archive-btn]:active {
-  transform: scale(0.92);
-}
-
-/* 三点操作按钮（hover 显示，同原生行行为） */
-body[data-dsh-cottage] .cottage-archive-more {
-  border: none;
-  background: transparent;
-  color: var(--dsw-alias-label-secondary, #4a6a8c);
-  width: 24px;
-  height: 24px;
-  border-radius: 6px;
-  font-size: 14px;
-  line-height: 1;
-  cursor: pointer;
-  opacity: 0;
-  flex-shrink: 0;
-  transition: opacity 0.12s ease, background 0.12s ease;
-}
-body[data-dsh-cottage] .cottage-archive-item:hover .cottage-archive-more,
-body[data-dsh-cottage] .cottage-archive-item.menu-open .cottage-archive-more {
-  opacity: 1;
-}
-body[data-dsh-cottage] .cottage-archive-more:hover {
-  background: var(--dsw-alias-interactive-bg-hover, rgba(90, 159, 212, 0.18));
-}
-body[data-dsh-cottage] .cottage-archive-more:disabled {
-  opacity: 0.3;
-  cursor: default;
 }
 /* 视图模式标签（跟随原生视图选项的只读显示） */
 body[data-dsh-cottage] .cottage-archive-viewmode {
@@ -705,4 +515,176 @@ body[data-dsh-cottage] .cottage-archive-group-name {
 /* 会话行可点击 */
 body[data-dsh-cottage] .cottage-archive-item {
   cursor: pointer;
+}
+/* ============================================
+ |  归档视图：精确对齐原生 Rows.module.css
+ |  （行/分组行结构与原生一致：hover 背景、
+ |   分组行 hover 文件夹→箭头、会话行 hover 时间隐藏）
+ |  ============================================ */
+body[data-dsh-cottage] .cottage-archive-error {
+  padding: 8px 10px;
+  font-size: 12px;
+  color: var(--dsw-alias-state-error-primary, #a05a5a);
+  background: rgba(200, 90, 90, 0.08);
+  border-bottom: 1px solid rgba(200, 90, 90, 0.15);
+  flex: none;
+}
+body[data-dsh-cottage] .cottage-archive-list {
+  min-height: 0;
+  flex: 1;
+  overflow-y: auto;
+  padding: 0 4px 16px;
+}
+body[data-dsh-cottage] .cottage-archive-group {
+  position: relative;
+}
+body[data-dsh-cottage] .cottage-archive-group + .cottage-archive-group {
+  margin-top: 4px;
+}
+body[data-dsh-cottage] .cottage-archive-group > * + * {
+  margin-top: 2px;
+}
+body[data-dsh-cottage] .cottage-archive-empty {
+  color: var(--dsw-alias-label-tertiary);
+  padding: 16px 12px;
+  font-size: 13px;
+}
+/* 分组行：对齐原生 projectRow */
+body[data-dsh-cottage] .cottage-archive-group-title {
+  box-sizing: border-box;
+  align-items: center;
+  height: 34px;
+  gap: 6px;
+  padding: 0 8px;
+  display: flex;
+  cursor: pointer;
+  user-select: none;
+  color: var(--dsw-alias-label-primary);
+  border-radius: 8px;
+  transition: background 0.1s ease;
+}
+body[data-dsh-cottage] .cottage-archive-group-title:hover {
+  background: var(--dsw-alias-interactive-bg-hover);
+}
+body[data-dsh-cottage] .cottage-archive-folder {
+  width: 16px;
+  height: 20px;
+  color: var(--dsw-alias-label-tertiary);
+  flex: none;
+  justify-content: center;
+  align-items: center;
+  display: inline-flex;
+}
+body[data-dsh-cottage] .cottage-archive-folder.open {
+  color: var(--dsw-alias-state-business-primary, #5a9fd4);
+}
+/* 箭头：默认隐藏，hover 时显示并隐藏文件夹（同原生） */
+body[data-dsh-cottage] .cottage-archive-chevron {
+  width: 16px;
+  height: 20px;
+  color: var(--dsw-alias-label-tertiary);
+  flex: none;
+  justify-content: center;
+  align-items: center;
+  display: none;
+}
+body[data-dsh-cottage] .cottage-archive-group-title:hover .cottage-archive-chevron {
+  display: inline-flex;
+}
+body[data-dsh-cottage] .cottage-archive-group-title:hover .cottage-archive-folder {
+  display: none;
+}
+body[data-dsh-cottage] .cottage-archive-arrow {
+  display: inline-flex;
+  transform: rotate(0deg);
+  transition: transform 0.15s var(--ds-ease-in-out, ease);
+}
+body[data-dsh-cottage] .cottage-archive-arrow.open {
+  transform: rotate(90deg);
+}
+body[data-dsh-cottage] .cottage-archive-project {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+  font-size: 14px;
+  line-height: 20px;
+  overflow: hidden;
+}
+body[data-dsh-cottage] .cottage-archive-group-title .cottage-archive-title {
+  margin: 0;
+}
+/* 会话行：对齐原生 sessionRow */
+body[data-dsh-cottage] .cottage-archive-item {
+  cursor: pointer;
+  user-select: none;
+  color: var(--dsw-alias-label-primary);
+  border-radius: 8px;
+  align-items: center;
+  gap: 0;
+  padding: 0 8px;
+  display: flex;
+  height: 32px;
+  animation: cottage-row-in 0.15s var(--ds-ease-in-out, ease);
+}
+@keyframes cottage-row-in {
+  from {
+    opacity: 0;
+  }
+}
+body[data-dsh-cottage] .cottage-archive-item:hover,
+body[data-dsh-cottage] .cottage-archive-item.menu-open {
+  background: var(--dsw-alias-interactive-bg-hover);
+}
+body[data-dsh-cottage] .cottage-archive-item .cottage-archive-title {
+  flex: 1;
+  margin: 0 6px 0 4px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+  font-size: 14px;
+  line-height: 20px;
+  overflow: hidden;
+}
+body[data-dsh-cottage] .cottage-archive-item .cottage-archive-time {
+  color: var(--dsw-alias-label-tertiary);
+  flex: none;
+  font-size: 12px;
+  line-height: 20px;
+  white-space: nowrap;
+}
+body[data-dsh-cottage] .cottage-archive-item .cottage-archive-actions {
+  flex: none;
+  align-items: center;
+  gap: 12px;
+  display: none;
+}
+body[data-dsh-cottage] .cottage-archive-item:hover .cottage-archive-actions,
+body[data-dsh-cottage] .cottage-archive-item.menu-open .cottage-archive-actions {
+  display: inline-flex;
+}
+/* hover 时时间隐藏（同原生） */
+body[data-dsh-cottage] .cottage-archive-item:hover .cottage-archive-time,
+body[data-dsh-cottage] .cottage-archive-item.menu-open .cottage-archive-time {
+  display: none;
+}
+body[data-dsh-cottage] .cottage-archive-more {
+  border: none;
+  background: transparent;
+  color: var(--dsw-alias-label-secondary, #4a6a8c);
+  width: 24px;
+  height: 24px;
+  border-radius: 6px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  flex: none;
+}
+body[data-dsh-cottage] .cottage-archive-more:hover {
+  background: var(--dsw-alias-interactive-bg-hover, rgba(90, 159, 212, 0.18));
+}
+body[data-dsh-cottage] .cottage-archive-more:disabled {
+  opacity: 0.3;
+  cursor: default;
 }
