@@ -89,7 +89,8 @@ export function apply(ctx: ClientContext): void {
     const rect = btn.getBoundingClientRect()
     const tip = document.createElement('div')
     tip.className = 'cottage-archive-tip'
-    tip.textContent = '归档会话'
+    // Archive view open → this button switches back to the workspace list.
+    tip.textContent = archiveRoot ? '工作区会话' : '归档会话'
     tip.style.left = rect.left + rect.width / 2 + 'px'
     tip.style.top = rect.bottom + 8 + 'px'
     document.body.appendChild(tip)
