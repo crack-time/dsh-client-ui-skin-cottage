@@ -32,12 +32,18 @@
   },
   "license": "MIT",
   "files": [
-    "lib",
+    "lib/client.js",
+    "lib/client.js.map",
+    "lib/index.js",
+    "lib/types",
     "assets",
     "cordis.patch.yml",
     "skin.json"
   ],
   "devDependencies": {
+    "@deepseek-ai/cordis": "4.0.1",
+    "@deepseek-ai/dsh-client-runtime": "0.1.0-rc.6",
+    "@deepseek-ai/dsh-host-webserver": "0.1.0-rc.6",
     "@types/node": "^26.2.0",
     "lightningcss": "^1.33.0",
     "tsdown": "^0.22.14",

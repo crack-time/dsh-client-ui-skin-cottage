@@ -7,30 +7,18 @@
  */
 import { readFile } from 'node:fs/promises'
 import { fileURLToPath } from 'node:url'
+import type { Context } from '@deepseek-ai/cordis'
+// Importing this type loads the webServer declaration-merge on Context
+// (dsh-host-webserver declares module '@deepseek-ai/cordis').
+import type { WebRoute } from '@deepseek-ai/dsh-host-webserver'
 
 const BG_PATH = fileURLToPath(new URL('../assets/cottage-bg.jpg', import.meta.url))
 const BG_ROUTE = '/plugins/@crack/dsh-client-ui-skin-cottage/bg.jpg'
 
-/** Minimal web route registry surface (no cordis type dependency). */
-interface WebRoute {
-  kind: 'exact' | 'prefix'
-  path: string
-  handler: (req: unknown, res: {
-    writeHead: (status: number, headers?: Record<string, string>) => void
-    end: (body?: unknown) => void
-  }) => void | Promise<void>
-}
-/** Minimal plugin context surface (no cordis type dependency). */
-interface SkinContext {
-  webServer: { register: (route: WebRoute) => () => void }
-  logger: { warn: (...args: unknown[]) => void }
-  effect: (fn: () => unknown, label?: string) => unknown
-}
-
 /** Required services: the web route registry. */
 const inject = ['webServer']
 
-function apply(ctx: SkinContext) {
+function apply(ctx: Context) {
   ctx.effect(() =>
     ctx.webServer.register({
       kind: 'exact',
@@ -49,7 +37,7 @@ function apply(ctx: SkinContext) {
           res.end()
         }
       },
-    }),
+    } satisfies WebRoute),
     'ui-skin-cottage: wallpaper route',
   )
 }

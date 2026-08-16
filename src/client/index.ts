@@ -1,3 +1,5 @@
+import type { ClientContext } from '@deepseek-ai/dsh-client-runtime/client'
+
 /**
  * Client entry for the Pastoral Cottage skin.
  *
@@ -8,13 +10,15 @@
  * tsdown plugin (same <style data-plugin> injection the old bundle emitted).
  */
 // css is provided by the build-time banner (scripts/cottage-inline-plugin.mjs)
+// ClientContext is the real client-side cordis Context
+// (re-exported by @deepseek-ai/dsh-client-runtime/client as ClientContext).
 declare const css: string
 
 // Wallpaper served by the host route (src/index.ts registers it).
 const BG =
   'url("/plugins/@crack/dsh-client-ui-skin-cottage/bg.jpg") center center / cover no-repeat fixed #3a6ea5'
 
-export function apply(ctx: { effect: (fn: () => () => void, label?: string) => unknown }): void {
+export function apply(ctx: ClientContext): void {
   const body = document.body
   body.dataset.dshCottage = ''
   // Inline style beats CSS rules. DSH theme may re-set body.style.background

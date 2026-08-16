@@ -2,7 +2,7 @@
 
 田园小屋皮肤（Pastoral Cottage Skin）—— 面向 DeepSeek Harness Web GUI（dsh web）的纯 UI 换肤插件。
 
-![screenshot placeholder]
+![田园小屋皮肤](docs/screenshot.jpg)
 
 ## 功能
 
@@ -58,7 +58,7 @@ pnpm run watch        # 监听模式：改 src/ 自动重建
 pnpm run typecheck    # 类型检查
 ```
 
-- 编辑 `src/client/cottage.module.css`（样式）或 `src/client/index.ts`（浏览器端逻辑）
+- 编辑 `src/client/cottage.css`（样式）或 `src/client/index.ts`（浏览器端逻辑）
 - 替换 `assets/cottage-bg.jpg`（壁纸原图，由 host 路由 serve）
 - 构建完成后浏览器自动热替换（client-hmr，无需刷新/重启）
 
@@ -74,7 +74,7 @@ pnpm run typecheck    # 类型检查
 dsh-client-ui-skin-cottage/
 ├── src/index.ts                    # host 面：注册 bg.jpg 路由
 ├── src/client/index.ts             # 浏览器端逻辑（apply）
-├── src/client/cottage.module.css   # 皮肤 CSS 源文件（构建时注入）
+├── src/client/cottage.css   # 皮肤 CSS 源文件（构建时注入）
 ├── assets/cottage-bg.jpg           # 壁纸原图（host 路由 serve）
 ├── scripts/cottage-inline-plugin.mjs  # tsdown 插件：内联 CSS
 ├── scripts/dev.mjs                 # watch 并行构建
