@@ -405,10 +405,8 @@ body[data-dsh-cottage] [data-cottage-archive-view] {
   display: flex;
   flex-direction: column;
   z-index: 100;
-  /* 与侧边栏同一毛玻璃底（工作区树区域透出的就是它） */
-  background: var(--dsw-specific-sidebar-fill, rgba(248, 245, 240, 0.42));
-  backdrop-filter: blur(16px) saturate(1.2);
-  -webkit-backdrop-filter: blur(16px) saturate(1.2);
+  /* 无背景：与工作区树区域一样直接透出壁纸 */
+  background: transparent;
   overflow: hidden;
 }
 body[data-dsh-cottage] [data-cottage-archive-view] {

@@ -142,6 +142,7 @@ export function apply(ctx: ClientContext): void {
   let archiveRoot: ReturnType<typeof createRoot> | null = null
   let archiveHost: HTMLElement | null = null
   let archiveTarget: HTMLElement | null = null
+  let hiddenNative: HTMLElement[] = []
   function openArchiveView() {
     const btn = document.querySelector<HTMLElement>('button[data-cottage-archive-btn]')
     // headerActions → sectionHeader → the tree region (its next sibling).
@@ -151,6 +152,13 @@ export function apply(ctx: ClientContext): void {
     const host = document.createElement('div')
     host.dataset.cottageArchiveView = ''
     target.style.position = 'relative'
+    // Hide the native tree content (the overlay is fully transparent, so the
+    // native rows must not show through underneath).
+    hiddenNative = []
+    for (const child of Array.from(target.children) as HTMLElement[]) {
+      child.style.display = 'none'
+      hiddenNative.push(child)
+    }
     target.appendChild(host)
     archiveTarget = target
     archiveHost = host
@@ -173,6 +181,8 @@ export function apply(ctx: ClientContext): void {
     archiveHost = null
     if (archiveTarget) archiveTarget.style.position = ''
     archiveTarget = null
+    for (const el of hiddenNative) el.style.display = ''
+    hiddenNative = []
   }
   function toggleArchiveView() {
     if (archiveRoot) closeArchiveView()
