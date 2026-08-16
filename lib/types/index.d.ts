@@ -1,5 +1,5 @@
 import type { Context } from '@deepseek-ai/cordis';
-/** Required services: the web route registry. */
+/** Required services: the web route registry, the workspace registry, session persistence. */
 declare const inject: string[];
 declare function apply(ctx: Context): void;
 export { apply, inject };

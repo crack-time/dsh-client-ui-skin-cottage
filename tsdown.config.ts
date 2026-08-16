@@ -10,6 +10,9 @@ export default defineConfig({
   outDir: 'lib',
   format: 'cjs',
   platform: 'browser',
+  // react is a platform module: the browser ModuleLoader resolves it from the
+  // frozen module table (dsh-client-web/src/platform), never bundled.
+  external: ['react', 'react/jsx-runtime'],
   dts: false,
   sourcemap: true,
   clean: false,

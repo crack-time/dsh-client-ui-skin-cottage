@@ -28,7 +28,18 @@
 - 会话统计条加宽至与输入框同宽，完整显示轮次/步数/耗时等指标
 - 侧栏会话列表底部渐隐条移除；折叠按钮微调（不贴右缘）
 
-> 仅注册一个静态图片路由（bg.jpg），其余全部为浏览器端行为；卸载即完全恢复
+
+### 归档会话管理（皮肤扩展）
+- 侧边栏"添加工作区"按钮右侧新增 📦 归档入口
+- 面板列出全部归档会话（标签 = 工作目录名，时间 = 创建时间）
+- 排序跟随原生"视图选项"：按时间（updated）/ 按归档顺序（manual）
+- 每项支持 **恢复**（unarchive，回到原工作区位置）与 **删除**（移除日志文件，不可恢复）
+- dsh 原生只有归档（archiveSession），恢复/删除由本插件 host 面实现：
+  - 恢复 = workspaceRegistry 官方写路径（enqueueOperation/setState）对称操作
+  - 删除 = 仅限非活跃（cold）会话：移除持久化日志 + 刷新 registry 索引 + 清归档集
+- API：`/plugins/@crack/dsh-client-ui-skin-cottage/api`（GET /archived、POST /unarchive、POST /delete-session）
+
+> 卸载即完全恢复（host 面除 bg.jpg 外新增归档 API 路由）
 
 ## 安装
 
