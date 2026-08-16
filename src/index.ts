@@ -84,21 +84,30 @@ async function unarchive(ctx: Context, sessionId: string): Promise<void> {
  *    cold path. Only archived sessions reach this API, and archiving implies
  *    quiescent work; deleting a genuinely running session is unsupported.
  *  - orphan entry (no persisted header/log): just drop the archive-set entry.
+ *
+ * After removal a `session/disposed` emit tells the api-proxy to forward
+ * `host/session-removed`, so the browser session list drops the row
+ * immediately (no stale row until reload). Cold sessions get a detached
+ * instance (all listeners guard on live state or only read the id).
  */
 async function deleteSession(ctx: Context, sessionId: string): Promise<void> {
   const sessions = ctx.sessions as unknown as {
     get: (id: string) => unknown
     store?: Map<string, unknown>
+    prepare: (id?: string, options?: unknown) => unknown
   }
+  const persistence = ctx.sessionPersistence as unknown as {
+    list: () => Promise<Array<{ id: unknown; cwd?: string; createdAt?: number }>>
+    locate: (meta: unknown) => { path: string } | undefined
+    load: (id: string) => Promise<{ meta: unknown; events: readonly unknown[] }>
+  }
+  let notify: unknown = null
   const live = sessions.get(sessionId)
   if (live !== undefined) {
     // No public dispose: remove the store entry directly (the enter()
     // disposer does exactly this plus unhooking append publication).
     sessions.store?.delete(sessionId)
-  }
-  const persistence = ctx.sessionPersistence as unknown as {
-    list: () => Promise<Array<{ id: unknown; cwd?: string; createdAt?: number }>>
-    locate: (meta: unknown) => { path: string } | undefined
+    notify = live
   }
   const headers = await persistence.list()
   const header = headers.find((h) => String(h.id) === sessionId)
@@ -106,6 +115,20 @@ async function deleteSession(ctx: Context, sessionId: string): Promise<void> {
     const location = persistence.locate(header)
     if (!location) {
       throw Object.assign(new Error('persistence backend has no per-session artifact'), { code: 400 })
+    }
+    if (notify === null) {
+      // Cold session: build a detached instance purely as the notification
+      // carrier (listeners guard on live state or read only the id).
+      try {
+        const inspection = await persistence.load(sessionId)
+        notify = sessions.prepare(sessionId, {
+          seed: inspection.events,
+          meta: inspection.meta,
+          seedSource: 'persistence',
+        })
+      } catch {
+        notify = null
+      }
     }
     await unlink(location.path)
   }
@@ -127,6 +150,14 @@ async function deleteSession(ctx: Context, sessionId: string): Promise<void> {
       })
     }
   })
+  if (notify !== null) {
+    try {
+      ;(ctx as unknown as { emit: (event: string, ...args: unknown[]) => void }).emit(
+        'session/disposed',
+        notify,
+      )
+    } catch {}
+  }
 }
 
 
