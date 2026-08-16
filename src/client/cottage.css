@@ -677,3 +677,30 @@ body[data-dsh-cottage] .cottage-archive-more:disabled {
   opacity: 0.3;
   cursor: default;
 }
+
+/* 归档按钮气泡：与原生 Tooltip 一致（正下方、--dsw-alias-tooltip-bg 底、白字、500ms 延迟） */
+body[data-dsh-cottage] button[data-cottage-archive-btn] {
+  position: relative;
+}
+body[data-dsh-cottage] button[data-cottage-archive-btn]::after {
+  content: '归档会话';
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--dsw-alias-tooltip-bg, #1f2937);
+  color: var(--dsw-static-blank-0, #ffffff);
+  font-size: 12px;
+  line-height: 16px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 10;
+  transition: opacity 0.1s ease;
+  transition-delay: 0.5s;
+}
+body[data-dsh-cottage] button[data-cottage-archive-btn]:hover::after {
+  opacity: 1;
+}
