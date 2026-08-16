@@ -18,7 +18,8 @@ const VIEW_KEY = 'dsh.workspace.view.v5'
 
 export interface ArchivedItem {
   sessionId: string
-  label: string
+  /** Native displayTitle fallback chain: durable title → cwd basename → id prefix. */
+  title: string
   createdAt: string | null
 }
 
@@ -136,8 +137,8 @@ export function ArchiveView({ onClose }: { onClose: () => void }): React.ReactEl
         {sorted.map((item) => (
           <li key={item.sessionId} className="cottage-archive-item">
             <div className="cottage-archive-meta">
-              <span className="cottage-archive-label" title={item.sessionId}>
-                {item.label}
+              <span className="cottage-archive-label" title={item.title}>
+                {item.title}
               </span>
               <span className="cottage-archive-time">{formatTime(item.createdAt)}</span>
             </div>
@@ -154,7 +155,7 @@ export function ArchiveView({ onClose }: { onClose: () => void }): React.ReactEl
                 className="danger"
                 disabled={busy === item.sessionId}
                 onClick={() => {
-                  if (window.confirm(`删除会话「${item.label}」？\n会话日志将被移除，此操作不可恢复。`)) {
+                  if (window.confirm(`删除会话「${item.title}」？\n会话日志将被移除，此操作不可恢复。`)) {
                     void act('delete-session', item)
                   }
                 }}

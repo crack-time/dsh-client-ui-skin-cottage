@@ -23,13 +23,14 @@ import type { WebRoute } from '@deepseek-ai/dsh-host-webserver'
 import type { WorkspaceRegistry } from '@deepseek-ai/dsh-workspace'
 import type { SessionStore } from '@deepseek-ai/dsh-session'
 import type { SessionPersistence } from '@deepseek-ai/dsh-session-persistence'
+import type { SessionProjectionCache } from '@deepseek-ai/dsh-session-projection-cache'
 
 const BG_PATH = fileURLToPath(new URL('../assets/cottage-bg.jpg', import.meta.url))
 const BG_ROUTE = '/plugins/@crack/dsh-client-ui-skin-cottage/bg.jpg'
 const API_PREFIX = '/plugins/@crack/dsh-client-ui-skin-cottage/api'
 
 /** Required services: the web route registry, the workspace registry, session persistence. */
-const inject = ['webServer', 'workspaceRegistry', 'sessionPersistence']
+const inject = ['webServer', 'workspaceRegistry', 'sessionPersistence', 'sessionProjectionCache']
 
 function sendJson(res: ServerResponse, status: number, body: unknown): void {
   const text = JSON.stringify(body)
@@ -116,20 +117,33 @@ async function deleteSession(ctx: Context, sessionId: string): Promise<void> {
   })
 }
 
-/** Archived list: archive-set ids joined with persisted headers (label = cwd basename). */
-async function listArchived(ctx: Context): Promise<Array<{ sessionId: string; label: string; createdAt: string | null }>> {
+/**
+ * Archived list: archive-set ids joined with persisted headers. Display
+ * title follows the native displayTitle fallback chain: durable title
+ * projection (sessionTitle) → cwd basename → session id prefix.
+ */
+async function listArchived(ctx: Context): Promise<Array<{ sessionId: string; title: string; createdAt: string | null }>> {
   const registry = ctx.workspaceRegistry as unknown as { archivedSessionIds: readonly string[] }
   const persistence = ctx.sessionPersistence as unknown as {
     list: () => Promise<Array<{ id: unknown; cwd?: string; createdAt?: string }>>
+  }
+  const cache = ctx.sessionProjectionCache as unknown as {
+    cachedSnapshot: (meta: unknown) => { values?: { title?: string | null } } | undefined
   }
   const archived = registry.archivedSessionIds
   const headers = await persistence.list()
   const byId = new Map(headers.map((h) => [String(h.id), h]))
   return archived.map((id) => {
     const header = byId.get(id)
+    const projected = header ? cache.cachedSnapshot(header)?.values?.title : undefined
     const cwd = header?.cwd
-    const label = cwd ? basename(String(cwd).replace(/[\\/]+$/, '')) : id.slice(0, 8)
-    return { sessionId: id, label, createdAt: header?.createdAt ?? null }
+    const title =
+      projected && projected.length > 0
+        ? projected
+        : cwd
+          ? basename(String(cwd).replace(/[\\/]+$/, ''))
+          : id.slice(0, 8)
+    return { sessionId: id, title, createdAt: header?.createdAt ?? null }
   })
 }
 

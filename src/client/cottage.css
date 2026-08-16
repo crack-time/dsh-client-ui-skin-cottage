@@ -422,10 +422,11 @@ body[data-dsh-cottage] .cottage-archive-head {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 8px 10px;
+  height: 36px;
+  padding: 0 10px;
   flex: none;
-  border-bottom: 1px solid rgba(90, 159, 212, 0.25);
-  background: rgba(90, 159, 212, 0.12);
+  border-bottom: 1px solid var(--dsw-alias-divider, rgba(90, 159, 212, 0.25));
+  background: var(--dsw-alias-bg-2, rgba(90, 159, 212, 0.12));
 }
 body[data-dsh-cottage] .cottage-archive-back {
   border: none;
@@ -488,16 +489,19 @@ body[data-dsh-cottage] .cottage-archive-empty {
   color: #8aa3ba;
   font-size: 12px;
 }
+/* 行：与原生工作区会话行同高、同圆角、同 hover 背景 */
 body[data-dsh-cottage] .cottage-archive-item {
   display: flex;
   align-items: center;
   gap: 8px;
-  padding: 8px 10px;
-  border-radius: 10px;
-  transition: background 0.15s ease;
+  height: 32px;
+  padding: 0 8px;
+  border-radius: 8px;
+  color: var(--dsw-alias-label-primary, #2b4259);
+  transition: background 0.12s ease;
 }
 body[data-dsh-cottage] .cottage-archive-item:hover {
-  background: rgba(90, 159, 212, 0.1);
+  background: var(--dsw-alias-interactive-bg-hover, rgba(90, 159, 212, 0.1));
 }
 body[data-dsh-cottage] .cottage-archive-meta {
   flex: 1;
@@ -508,14 +512,14 @@ body[data-dsh-cottage] .cottage-archive-meta {
 }
 body[data-dsh-cottage] .cottage-archive-label {
   font-size: 13px;
-  font-weight: 500;
+  color: var(--dsw-alias-label-primary, #2b4259);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 body[data-dsh-cottage] .cottage-archive-time {
   font-size: 11px;
-  color: #8aa3ba;
+  color: var(--dsw-alias-label-tertiary, #8aa3ba);
 }
 body[data-dsh-cottage] .cottage-archive-actions {
   display: flex;
