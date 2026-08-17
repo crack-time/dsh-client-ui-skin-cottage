@@ -2,6 +2,7 @@ import type { ClientContext } from '@deepseek-ai/dsh-client-runtime/client'
 import { createElement } from 'react'
 import { createRoot } from 'react-dom/client'
 import { ArchiveView } from './archive.js'
+import { registerFileMention } from './mention.js'
 
 /**
  * Client entry for the Pastoral Cottage skin.
@@ -21,9 +22,16 @@ declare const css: string
 const BG =
   'url("/plugins/@crack/dsh-client-ui-skin-cottage/bg.jpg") center center / cover no-repeat fixed #3a6ea5'
 
+/** Client-side service dependencies (runtime inject declaration; the
+ * package.json dsh.client.inject metadata mirrors this for the loader). */
+export const inject = ['inputTriggers', 'locale', 'conversation']
+
 export function apply(ctx: ClientContext): void {
   const body = document.body
   body.dataset.dshCottage = ''
+  try {
+    registerFileMention(ctx)
+  } catch {}
   // Inline style beats CSS rules. DSH theme may re-set body.style.background
   // on token overrides, so we guard with a MutationObserver.
   function setBg() {

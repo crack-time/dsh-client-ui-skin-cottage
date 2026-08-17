@@ -69,7 +69,7 @@ body[data-dsh-cottage] {
   --dsw-specific-input-major: rgba(255, 255, 255, 0.85);
 
   /* 菜单 / 选择器 */
-  --dsw-specific-menu: rgba(255, 255, 255, 0.72);
+  --dsw-specific-menu: #ffffff;
   --dsw-specific-selector: rgba(248, 245, 240, 0.62);
 
   /* 代码块 */
@@ -118,7 +118,7 @@ body[data-dsh-cottage][data-ds-dark-theme] {
   --dsw-specific-bubble: rgba(26, 30, 38, 0.50);
   --dsw-specific-bubble-highlight: rgba(122, 184, 232, 0.12);
   --dsw-specific-input-major: rgba(18, 22, 30, 0.85);
-  --dsw-specific-menu: rgba(22, 26, 34, 0.72);
+  --dsw-specific-menu: #161a22;
   --dsw-specific-selector: rgba(26, 30, 38, 0.66);
 
   --dsw-alias-markdown-code-block: rgba(22, 26, 34, 0.55);
@@ -441,7 +441,8 @@ body[data-dsh-cottage] .cottage-menu {
   min-width: 132px;
   padding: 4px;
   border-radius: 10px;
-  background: var(--dsw-alias-bg-1, #ffffff);
+  /* 与工作区三点菜单/@弹窗同一背景变量（--dsw-specific-menu = 不透明） */
+  background: var(--dsw-specific-menu, #ffffff);
   border: 1px solid var(--dsw-alias-divider, rgba(90, 159, 212, 0.25));
   box-shadow: 0 8px 24px rgba(46, 79, 108, 0.18);
   backdrop-filter: blur(12px);
@@ -730,3 +731,13 @@ body[data-dsh-cottage] .cottage-delete-status {
   font-size: 12px;
   line-height: 18px;
 }
+
+/* @ 文件提及菜单：与 / 命令菜单同宽（原生按内容收缩，路径类描述不会撑宽）
+   —— 用菜单组标题的 data-source 精准命中文件组，/ 命令菜单不受影响 */
+body[data-dsh-cottage] [role="listbox"]:has([data-source="文件"]) {
+  min-width: min(480px, 100%);
+}
+body[data-dsh-cottage] [role="listbox"]:has([data-source="文件"]) [role="option"] > span:nth-child(2) {
+  max-width: none;
+}
+
