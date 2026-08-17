@@ -720,3 +720,13 @@ body[data-dsh-cottage] .cottage-rename-error {
   font-size: 12px;
   line-height: 18px;
 }
+
+/* 删除确认弹窗（复刻原生 qDHVXG_deleteAction / qDHVXG_deleteStatus 规则） */
+body[data-dsh-cottage] .cottage-delete-action:not(:disabled) {
+  color: var(--dsw-alias-state-error-primary);
+}
+body[data-dsh-cottage] .cottage-delete-status {
+  color: var(--dsw-alias-label-secondary);
+  font-size: 12px;
+  line-height: 18px;
+}

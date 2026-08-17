@@ -266,6 +266,35 @@ export function ArchiveView({
   const [renameError, setRenameError] = useState<string | null>(null)
   const composingRef = useRef(false)
 
+  // Native-style delete confirmation (mirrors the workspace-browser
+  // delete Modal: description of consequences, danger action in the
+  // footer, pending status while in flight, inline error).
+  const [deleteTarget, setDeleteTarget] = useState<ArchivedItem | null>(null)
+  const [deleting, setDeleting] = useState(false)
+  const [deleteError, setDeleteError] = useState<string | null>(null)
+
+  const closeDelete = (): void => {
+    if (deleting) return
+    setDeleteTarget(null)
+    setDeleteError(null)
+  }
+
+  const confirmDelete = (): void => {
+    if (deleting || deleteTarget === null) return
+    setDeleting(true)
+    setDeleteError(null)
+    postAction('delete-session', deleteTarget.sessionId)
+      .then(async () => {
+        setDeleting(false)
+        setDeleteTarget(null)
+        await refresh()
+      })
+      .catch((reason: unknown) => {
+        setDeleting(false)
+        setDeleteError(reason instanceof Error ? reason.message : String(reason))
+      })
+  }
+
   const renameTrimmed = renameDraft.trim()
   const renameBlocked = renaming || renameTrimmed === '' || renameTarget === null
 
@@ -345,8 +374,8 @@ export function ArchiveView({
 
   const handleDelete = (item: ArchivedItem): void => {
     setMenu(null)
-    if (!window.confirm(`删除会话「${item.title}」？\n会话日志将被移除，此操作不可恢复。`)) return
-    void act('delete-session', item)
+    setDeleteTarget(item)
+    setDeleteError(null)
   }
 
   const sortSessions = (sessions: ArchivedItem[]): ArchivedItem[] =>
@@ -522,6 +551,43 @@ export function ArchiveView({
         {renameError !== null && (
           <div className="cottage-rename-error" role="alert">
             {renameError}
+          </div>
+        )}
+      </Modal>
+      <Modal
+        open={deleteTarget !== null}
+        onClose={closeDelete}
+        closeLabel="关闭"
+        title="删除会话"
+        description={
+          deleteTarget !== null
+            ? `将删除「${deleteTarget.title}」，会话日志将被移除，此操作不可恢复。`
+            : undefined
+        }
+        footer={
+          <>
+            <Button variant="outline" disabled={deleting} onClick={closeDelete}>
+              取消
+            </Button>
+            <Button
+              variant="outline"
+              className="cottage-delete-action"
+              disabled={deleting}
+              onClick={confirmDelete}
+            >
+              删除会话
+            </Button>
+          </>
+        }
+      >
+        {deleting && (
+          <div className="cottage-delete-status" role="status">
+            正在删除会话…
+          </div>
+        )}
+        {deleteError !== null && (
+          <div className="cottage-rename-error" role="alert">
+            {deleteError}
           </div>
         )}
       </Modal>
