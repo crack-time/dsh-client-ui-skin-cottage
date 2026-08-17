@@ -32,12 +32,16 @@
 ### 归档会话管理（皮肤扩展）
 - 侧边栏"添加工作区"按钮右侧新增 📦 归档入口
 - 面板列出全部归档会话（标签 = 工作目录名，时间 = 创建时间）
-- 排序跟随原生"视图选项"：按时间（updated）/ 按归档顺序（manual）
-- 每项支持 **恢复**（unarchive，回到原工作区位置）与 **删除**（移除日志文件，不可恢复）
-- dsh 原生只有归档（archiveSession），恢复/删除由本插件 host 面实现：
+- 分组与排序跟随原生"视图选项"（按工作区/单列、按时间/手动），分组可折叠，与原生共享同一持久化状态（`dsh.workspace.view.v5`）
+- 每行 hover 出现三点菜单：**重命名 / 还原 / 删除**
+  - 重命名：原生 Modal 弹窗（复用 `@deepseek-ai/dsh-client-ui-primitives` 的 Modal/Button 组件），自动聚焦全选、中文输入法（IME）保护、Enter 确认、Escape/遮罩关闭、错误内联提示——与工作区会话重命名交互一致
+  - 还原（unarchive）：回到原工作区位置
+  - 删除：原生 Modal 确认弹窗（红色危险按钮 + 后果说明 + 进行中状态），移除日志文件，不可恢复
+- dsh 原生只有归档（archiveSession），重命名/恢复/删除由本插件 host 面实现：
+  - 重命名 = 官方持久化路径（load → prepare → append session/title → persistence.append → projectionCache.write）
   - 恢复 = workspaceRegistry 官方写路径（enqueueOperation/setState）对称操作
-  - 删除 = 仅限非活跃（cold）会话：移除持久化日志 + 刷新 registry 索引 + 清归档集
-- API：`/plugins/@crack/dsh-client-ui-skin-cottage/api`（GET /archived、POST /unarchive、POST /delete-session）
+  - 删除 = 移除持久化日志 + 刷新 registry 索引 + 清归档集，并 emit `session/disposed` 让浏览器列表即时移除
+- API：`/plugins/@crack/dsh-client-ui-skin-cottage/api`（GET /archived、POST /rename-session、POST /unarchive、POST /delete-session）
 
 > 卸载即完全恢复（host 面除 bg.jpg 外新增归档 API 路由）
 
@@ -85,6 +89,7 @@ pnpm run typecheck    # 类型检查
 dsh-client-ui-skin-cottage/
 ├── src/index.ts                    # host 面：注册 bg.jpg 路由
 ├── src/client/index.ts             # 浏览器端逻辑（apply）
+├── src/client/archive.tsx          # 归档视图 React 组件（原生 Modal/Button 复用）
 ├── src/client/cottage.css   # 皮肤 CSS 源文件（构建时注入）
 ├── assets/cottage-bg.jpg           # 壁纸原图（host 路由 serve）
 ├── scripts/cottage-inline-plugin.mjs  # tsdown 插件：内联 CSS
@@ -107,6 +112,6 @@ dsh-client-ui-skin-cottage/
 
 ## 说明
 
-- 插件通过覆盖 DSH 的 CSS 设计 token（`--dsw-alias-*`、`--dsw-specific-*`）+ 少量浏览器端 JS 行为（座位重排、滚动管理、自绘按钮）生效，不修改 DSH 自带代码
+- 插件通过覆盖 DSH 的 CSS 设计 token（`--dsw-alias-*`、`--dsw-specific-*`）+ 少量浏览器端 JS 行为（座位重排、滚动管理、自绘按钮）生效，不修改 DSH 自带代码；归档弹窗直接复用平台模块 `@deepseek-ai/dsh-client-ui-primitives`（Modal/Button），保证与原生 UI 像素级一致
 - 壁纸为个人图片，如用于分发请替换为你拥有版权的图片
 - DSH 版本升级若改变 token 名或组件结构，需同步微调皮肤 CSS
