@@ -12,7 +12,7 @@ export default defineConfig({
   platform: 'browser',
   // react is a platform module: the browser ModuleLoader resolves it from the
   // frozen module table (dsh-client-web/src/platform), never bundled.
-  external: ['react', 'react/jsx-runtime', 'react-dom/client'],
+  external: ['react', 'react/jsx-runtime', 'react-dom', 'react-dom/client', '@deepseek-ai/dsh-client-ui-primitives'],
   dts: false,
   sourcemap: true,
   clean: false,

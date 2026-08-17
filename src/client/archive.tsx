@@ -11,7 +11,8 @@
  * Data and mutations go through the host-half API (src/index.ts).
  */
 import { createPortal } from 'react-dom'
-import { useCallback, useEffect, useState } from 'react'
+import { useCallback, useEffect, useRef, useState } from 'react'
+import { Button, Modal } from '@deepseek-ai/dsh-client-ui-primitives'
 
 const API = '/plugins/@crack/dsh-client-ui-skin-cottage/api'
 const VIEW_KEY = 'dsh.workspace.view.v5'
@@ -256,6 +257,39 @@ export function ArchiveView({
   const [error, setError] = useState<string | null>(null)
   const [view, setView] = useState<{ groupBy: GroupBy; orderBy: OrderBy }>(readViewState)
   const [menu, setMenu] = useState<{ item: ArchivedItem; x: number; y: number } | null>(null)
+  // Native-style rename dialog state (mirrors the workspace browser's
+  // session-rename Modal: autofocus+select-all, IME composition guard,
+  // Enter to confirm, Escape/mask to close, inline error).
+  const [renameTarget, setRenameTarget] = useState<{ sessionId: string; title: string } | null>(null)
+  const [renameDraft, setRenameDraft] = useState('')
+  const [renaming, setRenaming] = useState(false)
+  const [renameError, setRenameError] = useState<string | null>(null)
+  const composingRef = useRef(false)
+
+  const renameTrimmed = renameDraft.trim()
+  const renameBlocked = renaming || renameTrimmed === '' || renameTarget === null
+
+  const closeRename = (): void => {
+    if (renaming) return
+    setRenameTarget(null)
+    setRenameError(null)
+  }
+
+  const confirmRename = (): void => {
+    if (renameBlocked || renameTarget === null) return
+    setRenaming(true)
+    setRenameError(null)
+    renameSession(renameTarget.sessionId, renameTrimmed)
+      .then(async () => {
+        setRenaming(false)
+        setRenameTarget(null)
+        await refresh()
+      })
+      .catch((reason: unknown) => {
+        setRenaming(false)
+        setRenameError(reason instanceof Error ? reason.message : String(reason))
+      })
+  }
   const [expanded, setExpanded] = useState<Record<string, boolean>>(() => readViewState().groupExpansion)
 
   // Mirror the native view-options button: poll the shared persisted store key.
@@ -304,22 +338,9 @@ export function ArchiveView({
 
   const handleRename = (item: ArchivedItem): void => {
     setMenu(null)
-    const title = window.prompt('重命名会话', item.title)
-    if (title === null) return
-    const trimmed = title.trim()
-    if (!trimmed) return
-    void (async () => {
-      setBusy(item.sessionId)
-      setError(null)
-      try {
-        await renameSession(item.sessionId, trimmed)
-        await refresh()
-      } catch (e) {
-        setError(e instanceof Error ? e.message : String(e))
-      } finally {
-        setBusy(null)
-      }
-    })()
+    setRenameTarget({ sessionId: item.sessionId, title: item.title })
+    setRenameDraft(item.title)
+    setRenameError(null)
   }
 
   const handleDelete = (item: ArchivedItem): void => {
@@ -456,6 +477,54 @@ export function ArchiveView({
           onClose={() => setMenu(null)}
         />
       )}
+      <Modal
+        open={renameTarget !== null}
+        onClose={closeRename}
+        closeLabel="关闭"
+        title="重命名会话"
+        footer={
+          <>
+            <Button variant="outline" disabled={renaming} onClick={closeRename}>
+              取消
+            </Button>
+            <Button variant="primary" disabled={renameBlocked} onClick={confirmRename}>
+              重命名
+            </Button>
+          </>
+        }
+      >
+        <input
+          className="cottage-rename-input"
+          value={renameDraft}
+          aria-label="会话名称"
+          autoFocus
+          disabled={renaming}
+          onFocus={(e) => {
+            e.target.select()
+          }}
+          onChange={(e) => {
+            setRenameDraft(e.target.value)
+            setRenameError(null)
+          }}
+          onCompositionStart={() => {
+            composingRef.current = true
+          }}
+          onCompositionEnd={() => {
+            composingRef.current = false
+          }}
+          onKeyDown={(e) => {
+            if (e.key === 'Enter' && !composingRef.current) {
+              e.preventDefault()
+              confirmRename()
+            }
+          }}
+        />
+        {renameError !== null && (
+          <div className="cottage-rename-error" role="alert">
+            {renameError}
+          </div>
+        )}
+      </Modal>
     </div>
   )
 }

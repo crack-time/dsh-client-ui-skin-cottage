@@ -58,6 +58,7 @@
     "@types/react-dom": "^18.3.7",
     "lightningcss": "^1.33.0",
     "tsdown": "^0.22.14",
-    "typescript": "^7.0.2"
+    "typescript": "^7.0.2",
+    "@deepseek-ai/dsh-client-ui-primitives": "0.1.0-rc.6"
   }
 }

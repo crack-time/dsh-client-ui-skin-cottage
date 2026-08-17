@@ -694,3 +694,29 @@ body[data-dsh-cottage] .cottage-archive-tip {
   z-index: 2147483011;
   pointer-events: none;
 }
+
+
+/* 重命名对话框输入框（复刻原生 qDHVXG_renameInput 规则，弹窗壳体用原生 Modal） */
+body[data-dsh-cottage] .cottage-rename-input {
+  box-sizing: border-box;
+  border: 1px solid var(--dsw-alias-border-l2);
+  width: 100%;
+  height: 44px;
+  color: var(--dsw-alias-label-primary);
+  background: 0 0;
+  border-radius: 22px;
+  outline: none;
+  padding: 7px 14px;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 22px;
+}
+body[data-dsh-cottage] .cottage-rename-input:disabled {
+  color: var(--dsw-alias-label-dimmed);
+}
+body[data-dsh-cottage] .cottage-rename-error {
+  color: var(--dsw-alias-state-error-primary);
+  margin-top: 8px;
+  font-size: 12px;
+  line-height: 18px;
+}
