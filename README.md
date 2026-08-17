@@ -41,6 +41,12 @@
 - API：`/plugins/@crack/dsh-client-ui-skin-cottage/api`（GET /archived、POST /rename-session、POST /unarchive、POST /delete-session）
 
 
+### 输入框 @ 文件提及（皮肤扩展）
+- 输入框输入 `@` 打开文件/目录候选菜单（复用 dsh 原生触发管线，与 `/` 命令菜单同源）
+- 目录可逐级进入；输入关键字（如 `@ass`）递归搜索当前工作目录（跳过 node_modules 等），长名称不截断，菜单宽度与 `/` 菜单一致
+- 选中后插入真实文本 `@相对路径`：光标对齐、宽度自适应；在提及末尾按 Backspace **一次性删除整个提及**
+- API：`/plugins/@crack/dsh-client-ui-skin-cottage/api`（GET /mention/files）
+
 ## 安装
 
 插件通过符号链接安装到 dsh web profile：
