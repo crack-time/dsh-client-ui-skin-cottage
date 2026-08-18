@@ -130,7 +130,7 @@ export function registerFileMention(ctx: ClientContext): void {
   registerMentionDelete(ctx)
   const inputTriggers = ctx.get('inputTriggers')!
   const source = createFileMentionSource()
-  ctx.effect(() => inputTriggers.registerSource(source), 'ui-skin-cottage: @ file source')
+  ctx.effect(() => inputTriggers.registerSource(source), 'dsh-web-ui-skin: @ file source')
 }
 /**
  * Whole-token deletion for our '@' mentions: intercept Backspace on the
@@ -197,5 +197,5 @@ export function registerMentionDelete(ctx: ClientContext): void {
   document.addEventListener('keydown', onKeyDown, true)
   ctx.effect(() => () => {
     document.removeEventListener('keydown', onKeyDown, true)
-  }, 'ui-skin-cottage: mention delete')
+  }, 'dsh-web-ui-skin: mention delete')
 }

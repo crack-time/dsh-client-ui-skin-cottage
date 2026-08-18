@@ -4,10 +4,10 @@ import { createRoot } from 'react-dom/client'
 import { ArchiveView } from './archive.js'
 import { registerFileMention } from './mention.js'
 import {
-  COTTAGE_CONFIG_URL,
-  COTTAGE_DEFAULTS,
-  createCottageCardStore,
-  installCottageSettingsCard,
+  SKIN_CONFIG_URL,
+  SKIN_DEFAULTS,
+  createSkinCardStore,
+  installSkinSettingsCard,
 } from './settings-card.js'
 import {
   currentPicked,
@@ -25,7 +25,7 @@ import {
  * host route registered in src/index.ts; CSS is inlined at build time by the
  * tsdown plugin (same <style data-plugin> injection the old bundle emitted).
  */
-// css is provided by the build-time banner (scripts/cottage-inline-plugin.mjs)
+// css is provided by the build-time banner (scripts/skin-inline-plugin.mjs)
 // ClientContext is the real client-side cordis Context
 // (re-exported by @deepseek-ai/dsh-client-runtime/client as ClientContext).
 declare const css: string
@@ -38,18 +38,18 @@ const BG =
 /**
  * Resolved skin settings, read from the host /api/config endpoint and
  * refreshed on every `settings/document-updated` wire event, so dsh rc.7's
- * "cottage" settings card edits apply live (no page reload).
+ * "skin" settings card edits apply live (no page reload).
  */
-interface CottageSettings {
+interface SkinSettings {
   wallpaperUrl?: string
   glassOpacity?: number
   archiveButton?: boolean
 }
-let settings: CottageSettings = {}
+let settings: SkinSettings = {}
 /** Whether the sidebar archive entry may be shown (settings.archiveButton). */
 let archiveEnabled = true
 /** Snapshot source for the settings-dialog card (kept in sync on refresh). */
-const cardStore = createCottageCardStore()
+const cardStore = createSkinCardStore()
 
 /** Client-side service dependencies (runtime inject declaration; the
  * package.json dsh.client.inject metadata mirrors this for the loader). */
@@ -57,12 +57,12 @@ export const inject = ['inputTriggers', 'locale', 'conversation', 'slots', 'remo
 
 export function apply(ctx: ClientContext): void {
   const body = document.body
-  body.dataset.dshCottage = ''
+  body.dataset.dshSkin = ''
   try {
     registerFileMention(ctx)
   } catch {}
   // Settings-dialog card: registers the locale dict and the `settings.plugin.item` slot entry.
-  installCottageSettingsCard(ctx, cardStore)
+  installSkinSettingsCard(ctx, cardStore)
   // Inline style beats CSS rules. DSH theme may re-set body.style.background
   // on token overrides, so we guard with a MutationObserver.
   let currentBg = BG
@@ -98,11 +98,11 @@ export function apply(ctx: ClientContext): void {
     }
     probe.onerror = () => applyBgSrc('cover')
     probe.src = src
-    // Frosted-glass strength, driving the --cottage-glass token family the
+    // Frosted-glass strength, driving the --skin-glass token family the
     // skin CSS maps onto the translucent panels (default 0.48 = the bundled
     // look; the card's number field ranges 0..1).
     const glass = clamp01(typeof settings.glassOpacity === 'number' ? settings.glassOpacity : 0.48)
-    body.style.setProperty('--cottage-glass', String(glass))
+    body.style.setProperty('--skin-glass', String(glass))
     archiveEnabled = settings.archiveButton !== false
   }
   applyConfig()
@@ -168,7 +168,7 @@ export function apply(ctx: ClientContext): void {
   function showTip(btn: HTMLElement) {
     const rect = btn.getBoundingClientRect()
     const tip = document.createElement('div')
-    tip.className = 'cottage-archive-tip'
+    tip.className = 'skin-archive-tip'
     // Archive view open → this button switches back to the workspace list.
     tip.textContent = archiveRoot ? '工作区会话' : '归档会话'
     tip.style.left = rect.left + rect.width / 2 + 'px'
@@ -187,14 +187,14 @@ export function apply(ctx: ClientContext): void {
     }
   }
   function ensureArchiveButton() {
-    if (document.querySelector('[data-cottage-archive-btn]')) return
+    if (document.querySelector('[data-skin-archive-btn]')) return
     const labels = ['添加工作区', 'Add workspace', 'Add workspace…']
     for (const btn of document.querySelectorAll('button[aria-label]')) {
       const label = (btn.getAttribute('aria-label') || '').trim()
       if (labels.includes(label)) {
         const b = document.createElement('button')
         b.type = 'button'
-        b.dataset.cottageArchiveBtn = ''
+        b.dataset.skinArchiveBtn = ''
         b.setAttribute('aria-label', '归档会话')
         // Folder icon matching the native IconFolderClose16 (same path).
         b.innerHTML = '<svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path fill="currentColor" transform="translate(1.5 2.429)" d="M5.05582 0.518756L4.50669 0.86654L5.05582 0.518756ZM13 9.4837L13.65 9.4837L13.65 3.53962L13 3.53962L12.35 3.53962L12.35 9.4837L13 9.4837ZM11.3264 1.86603L11.3264 1.21603L6.52313 1.21603L6.52313 1.86603L6.52313 2.51603L11.3264 2.51603L11.3264 1.86603ZM5.58054 1.34727L6.12968 0.999489L5.60495 0.170972L5.05582 0.518756L4.50669 0.86654L5.03141 1.69506L5.58054 1.34727ZM4.11323 1.23058e-13L4.11323 -0.65L1.67359 -0.65L1.67359 5.00699e-14L1.67359 0.65L4.11323 0.65L4.11323 1.23058e-13ZM0 1.67359L-0.65 1.67359L-0.65 9.4837L0 9.4837L0.65 9.4837L0.65 1.67359L0 1.67359ZM11.3264 11.1573L11.3264 10.5073L1.67359 10.5073L1.67359 11.1573L1.67359 11.8073L11.3264 11.8073L11.3264 11.1573ZM0 9.4837L-0.65 9.4837C-0.65 10.767 0.390308 11.8073 1.67359 11.8073L1.67359 11.1573L1.67359 10.5073C1.10828 10.5073 0.65 10.049 0.65 9.4837L0 9.4837ZM1.67359 5.00699e-14L1.67359 -0.65C0.390307 -0.65 -0.65 0.390309 -0.65 1.67359L0 1.67359L0.65 1.67359C0.65 1.10828 1.10828 0.65 1.67359 0.65L1.67359 5.00699e-14ZM5.05582 0.518756L5.60495 0.170972C5.28121 -0.340193 4.71829 -0.65 4.11323 -0.65L4.11323 1.23058e-13L4.11323 0.65C4.27282 0.65 4.4213 0.731715 4.50669 0.86654L5.05582 0.518756ZM6.52313 1.86603L6.52313 1.21603C6.36354 1.21603 6.21507 1.13431 6.12968 0.999489L5.58054 1.34727L5.03141 1.69506C5.35515 2.20622 5.91808 2.51603 6.52313 2.51603L6.52313 1.86603ZM13 3.53962L13.65 3.53962C13.65 2.25634 12.6097 1.21603 11.3264 1.21603L11.3264 1.86603L11.3264 2.51603C11.8917 2.51603 12.35 2.97431 12.35 3.53962L13 3.53962ZM13 9.4837L12.35 9.4837C12.35 10.049 11.8917 10.5073 11.3264 10.5073L11.3264 11.1573L11.3264 11.8073C12.6097 11.8073 13.65 10.767 13.65 9.4837L13 9.4837Z"/></svg>'
@@ -222,7 +222,7 @@ export function apply(ctx: ClientContext): void {
     else {
       // Settings card turned the archive entry off: drop the button (and any
       // open overlay) until it is turned back on.
-      document.querySelectorAll('[data-cottage-archive-btn]').forEach((el) => el.remove())
+      document.querySelectorAll('[data-skin-archive-btn]').forEach((el) => el.remove())
       closeArchiveView()
     }
     moveSeat()
@@ -260,13 +260,13 @@ export function apply(ctx: ClientContext): void {
   let archiveTarget: HTMLElement | null = null
   let hiddenNative: HTMLElement[] = []
   function openArchiveView() {
-    const btn = document.querySelector<HTMLElement>('button[data-cottage-archive-btn]')
+    const btn = document.querySelector<HTMLElement>('button[data-skin-archive-btn]')
     // headerActions → sectionHeader → the tree region (its next sibling).
     const header = btn?.parentElement?.parentElement
     const target = (header?.nextElementSibling as HTMLElement | null) ?? header?.parentElement
     if (!target || archiveRoot) return
     const host = document.createElement('div')
-    host.dataset.cottageArchiveView = ''
+    host.dataset.skinArchiveView = ''
     target.style.position = 'relative'
     // Hide the native tree content (the overlay is fully transparent, so the
     // native rows must not show through underneath).
@@ -317,16 +317,16 @@ export function apply(ctx: ClientContext): void {
   // write commits).
   async function refreshConfig() {
     try {
-      const res = await fetch(COTTAGE_CONFIG_URL, { cache: 'no-store' })
+      const res = await fetch(SKIN_CONFIG_URL, { cache: 'no-store' })
       if (!res.ok) return
-      settings = (await res.json()) as CottageSettings
+      settings = (await res.json()) as SkinSettings
       applyConfig()
       onDomChange()
       cardStore.set({
         loaded: true,
-        wallpaperUrl: settings.wallpaperUrl ?? COTTAGE_DEFAULTS.wallpaperUrl,
-        glassOpacity: settings.glassOpacity ?? COTTAGE_DEFAULTS.glassOpacity,
-        archiveButton: settings.archiveButton ?? COTTAGE_DEFAULTS.archiveButton,
+        wallpaperUrl: settings.wallpaperUrl ?? SKIN_DEFAULTS.wallpaperUrl,
+        glassOpacity: settings.glassOpacity ?? SKIN_DEFAULTS.glassOpacity,
+        archiveButton: settings.archiveButton ?? SKIN_DEFAULTS.archiveButton,
       })
     } catch {
       // Host endpoint not settled yet: keep the last-applied config; the
@@ -353,11 +353,11 @@ export function apply(ctx: ClientContext): void {
       if (seatRO) seatRO.disconnect()
       offRemote?.()
       disposePicked()
-      delete body.dataset.dshCottage
+      delete body.dataset.dshSkin
       body.style.removeProperty('background')
-      body.style.removeProperty('--cottage-glass')
-      document.querySelectorAll('[data-cottage-archive-btn]').forEach((el) => el.remove())
+      body.style.removeProperty('--skin-glass')
+      document.querySelectorAll('[data-skin-archive-btn]').forEach((el) => el.remove())
       closeArchiveView()
-    }, 'ui-skin-cottage: background')
+    }, 'dsh-web-ui-skin: background')
   } catch {}
 }

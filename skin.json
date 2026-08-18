@@ -13,10 +13,10 @@
     "glass"
   ],
   "accent": "#5a9fd4",
-  "bodyAttr": "data-dsh-cottage",
+  "bodyAttr": "data-dsh-skin",
   "package": "@crack/dsh-web-ui-skin",
   "wiring": {
-    "id": "ui-skin-cottage",
+    "id": "dsh-web-ui-skin",
     "bundleWired": true
   },
   "order": 99

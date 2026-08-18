@@ -10,12 +10,12 @@ import {
 } from './local-wallpaper.js'
 
 /**
- * Settings-dialog card for the "cottage" skin namespace (dsh rc.7 feature).
+ * Settings-dialog card for the "skin" skin namespace (dsh rc.7 feature).
  *
  * The host registers the namespace (ctx.settings.register) and serves
  * GET/POST /api/config; the settings dialog's "configurable plugins" tab
  * dispatches the `settings.plugin.item` slot BY namespace key, so this card
- * must be registered into that slot with `key: 'cottage'` to show up. The
+ * must be registered into that slot with `key: 'skin'` to show up. The
  * slot system renders our component with `t` (bound to our locale dict) plus
  * whatever `inject()` returns (here: a uSES snapshot hook + applyPatch).
  *
@@ -28,31 +28,31 @@ import {
  */
 
 /** The three knobs the card edits — keep in sync with the host schema. */
-export interface CottageSettings {
+export interface SkinSettings {
   wallpaperUrl: string
   glassOpacity: number
   archiveButton: boolean
 }
 
-export const COTTAGE_DEFAULTS: CottageSettings = {
+export const SKIN_DEFAULTS: SkinSettings = {
   wallpaperUrl: '',
   glassOpacity: 0.48,
   archiveButton: true,
 }
 
 /** Snapshot the card renders from; `loaded` flips once the first read landed. */
-export type CottageCardState = CottageSettings & { loaded: boolean }
+export type SkinCardState = SkinSettings & { loaded: boolean }
 
 /** Host endpoint for the URL field's settings read/write. */
-export const COTTAGE_CONFIG_URL = '/plugins/@crack/dsh-web-ui-skin/api/config'
+export const SKIN_CONFIG_URL = '/plugins/@crack/dsh-web-ui-skin/api/config'
 
 /** Tiny uSES-compatible snapshot store; the slot system exposes `hooks.*` as `use*`. */
-export function createCottageCardStore() {
-  let state: CottageCardState = { ...COTTAGE_DEFAULTS, loaded: false }
+export function createSkinCardStore() {
+  let state: SkinCardState = { ...SKIN_DEFAULTS, loaded: false }
   const listeners = new Set<() => void>()
   return {
-    getSnapshot: (): CottageCardState => state,
-    set(next: CottageCardState) {
+    getSnapshot: (): SkinCardState => state,
+    set(next: SkinCardState) {
       state = next
       listeners.forEach((listener) => listener())
     },
@@ -66,7 +66,7 @@ export function createCottageCardStore() {
 }
 
 /** Locale dictionary for the card (title / description / labels / hints). */
-export const COTTAGE_CARD_LOCALE = {
+export const SKIN_CARD_LOCALE = {
   zh: {
     title: '壁纸',
     description: '壁纸设置',
@@ -103,25 +103,25 @@ export const COTTAGE_CARD_LOCALE = {
   },
 } as const
 
-export type CottageCardProps = {
+export type SkinCardProps = {
   t: (key: string) => string
-  useCottageCard: <T>(select: (state: CottageCardState) => T) => T
-  applyPatch: (patch: Partial<CottageSettings>) => Promise<{ ok: boolean; error?: string }>
+  useSkinCard: <T>(select: (state: SkinCardState) => T) => T
+  applyPatch: (patch: Partial<SkinSettings>) => Promise<{ ok: boolean; error?: string }>
 }
 
 const cn = (...classes: Array<string | false | undefined>) => classes.filter(Boolean).join(' ')
 
-/** The settings-dialog card for the cottage namespace (slot key 'cottage'). */
-export function CottageSettingsCard(props: CottageCardProps) {
-  const { t, useCottageCard, applyPatch } = props
-  const snapshot = useCottageCard((state) => state)
+/** The settings-dialog card for the skin namespace (slot key 'skin'). */
+export function SkinSettingsCard(props: SkinCardProps) {
+  const { t, useSkinCard, applyPatch } = props
+  const snapshot = useSkinCard((state) => state)
   const available = snapshot.loaded
   const [open, setOpen] = useState(false)
-  const [wallpaper, setWallpaper] = useState(COTTAGE_DEFAULTS.wallpaperUrl)
+  const [wallpaper, setWallpaper] = useState(SKIN_DEFAULTS.wallpaperUrl)
   const [saving, setSaving] = useState(false)
   const [failed, setFailed] = useState(false)
 
-  const server = snapshot.wallpaperUrl ?? COTTAGE_DEFAULTS.wallpaperUrl
+  const server = snapshot.wallpaperUrl ?? SKIN_DEFAULTS.wallpaperUrl
   const dirty = wallpaper.trim() !== server
 
   // Sync the staged form to fresh server snapshots, but never clobber an
@@ -179,29 +179,29 @@ export function CottageSettingsCard(props: CottageCardProps) {
   const title = t('title')
   return (
     <li
-      data-cottage-settings
-      className={cn('cottage-settings-card', open && 'cottage-settings-card-open')}
+      data-skin-settings
+      className={cn('skin-settings-card', open && 'skin-settings-card-open')}
     >
       <button
         type="button"
-        className="cottage-settings-header"
+        className="skin-settings-header"
         aria-expanded={open}
         aria-label={`${t(open ? 'collapse' : 'expand')}: ${title}`}
         onClick={() => setOpen(!open)}
       >
-        <span className="cottage-settings-headText">
-          <span className="cottage-settings-name">{title}</span>
-          <span className="cottage-settings-description">{t('description')}</span>
+        <span className="skin-settings-headText">
+          <span className="skin-settings-name">{title}</span>
+          <span className="skin-settings-description">{t('description')}</span>
         </span>
-        {dirty ? <span className="cottage-settings-pending">{t('unsaved')}</span> : null}
+        {dirty ? <span className="skin-settings-pending">{t('unsaved')}</span> : null}
         <IconChevronDownOutline14
-          className={cn('cottage-settings-chevron', open && 'cottage-settings-chevron-open')}
+          className={cn('skin-settings-chevron', open && 'skin-settings-chevron-open')}
         />
       </button>
       {open ? (
-        <div className="cottage-settings-body">
-          <label className="cottage-settings-row">
-            <span className="cottage-settings-label">{t('wallpaperUrl')}</span>
+        <div className="skin-settings-body">
+          <label className="skin-settings-row">
+            <span className="skin-settings-label">{t('wallpaperUrl')}</span>
             <input
               type="text"
               value={wallpaper}
@@ -209,11 +209,11 @@ export function CottageSettingsCard(props: CottageCardProps) {
               spellCheck={false}
               onChange={(e) => setWallpaper(e.target.value)}
             />
-            <span className="cottage-settings-controls">
+            <span className="skin-settings-controls">
               {canPickLocally ? (
                 <button
                   type="button"
-                  className="cottage-settings-pick"
+                  className="skin-settings-pick"
                   disabled={busy}
                   onClick={() => {
                     void handlePick()
@@ -222,12 +222,12 @@ export function CottageSettingsCard(props: CottageCardProps) {
                   {t('pick')}
                 </button>
               ) : (
-                <span className="cottage-settings-hint">{t('unsupported')}</span>
+                <span className="skin-settings-hint">{t('unsupported')}</span>
               )}
               {pickedName ? (
                 <button
                   type="button"
-                  className="cottage-settings-pick"
+                  className="skin-settings-pick"
                   disabled={busy}
                   onClick={() => {
                     void handleClearLocal()
@@ -238,22 +238,22 @@ export function CottageSettingsCard(props: CottageCardProps) {
               ) : null}
             </span>
             {pickedName ? (
-              <span className="cottage-settings-hint">
+              <span className="skin-settings-hint">
                 {t('picked')}
                 {pickedName}
               </span>
             ) : null}
-            <span className="cottage-settings-hint">{t('wallpaperUrlHint')}</span>
+            <span className="skin-settings-hint">{t('wallpaperUrlHint')}</span>
           </label>
-          <div className="cottage-settings-footer">
+          <div className="skin-settings-footer">
             {failed ? (
-              <p className="cottage-settings-failed" role="status">
+              <p className="skin-settings-failed" role="status">
                 {t('saveFailed')}
               </p>
             ) : null}
             <button
               type="button"
-              className="cottage-settings-discard"
+              className="skin-settings-discard"
               disabled={!dirty || saving}
               onClick={() => {
                 setWallpaper(server)
@@ -264,7 +264,7 @@ export function CottageSettingsCard(props: CottageCardProps) {
             </button>
             <button
               type="button"
-              className="cottage-settings-save"
+              className="skin-settings-save"
               disabled={!dirty || saving}
               onClick={() => {
                 void commit()
@@ -282,18 +282,18 @@ export function CottageSettingsCard(props: CottageCardProps) {
 /**
  * Register the card into the settings dialog:
  *  - locale dictionary under a namespace we own;
- *  - one `settings.plugin.item` slot entry keyed by the 'cottage' namespace.
+ *  - one `settings.plugin.item` slot entry keyed by the 'skin' namespace.
  * The dialog dispatches it only while the host serves that namespace, so our
  * own registration stays invisible if the settings service is absent.
  */
-export function installCottageSettingsCard(
+export function installSkinSettingsCard(
   ctx: ClientContext,
-  store: ReturnType<typeof createCottageCardStore>,
+  store: ReturnType<typeof createSkinCardStore>,
 ): void {
-  const dict = 'cottage-skin'
+  const dict = 'dsh-web-ui-skin'
   try {
     const locale = (ctx as unknown as { locale?: { register: (ns: string, dict: unknown) => void } }).locale
-    locale?.register(dict, COTTAGE_CARD_LOCALE)
+    locale?.register(dict, SKIN_CARD_LOCALE)
   } catch {}
   try {
     const slots = (ctx as unknown as {
@@ -306,13 +306,13 @@ export function installCottageSettingsCard(
       yield slots.register(
         {
           name: 'settings.plugin.item',
-          key: 'cottage',
+          key: 'skin',
           locale: dict,
           inject: () => ({
-            hooks: { cottageCard: store },
-            applyPatch: async (patch: Partial<CottageSettings>) => {
+            hooks: { skinCard: store },
+            applyPatch: async (patch: Partial<SkinSettings>) => {
               try {
-                const res = await fetch(COTTAGE_CONFIG_URL, {
+                const res = await fetch(SKIN_CONFIG_URL, {
                   method: 'POST',
                   headers: { 'content-type': 'application/json' },
                   body: JSON.stringify({ patch }),
@@ -328,7 +328,7 @@ export function installCottageSettingsCard(
             },
           }),
         },
-        CottageSettingsCard,
+        SkinSettingsCard,
       )
     })
   } catch {}

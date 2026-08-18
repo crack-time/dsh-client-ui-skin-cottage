@@ -184,8 +184,8 @@ function ContextMenu({
 }): React.ReactPortal {
   return createPortal(
     <>
-      <div className="cottage-menu-mask" onClick={onClose} onContextMenu={(e) => { e.preventDefault(); onClose() }} />
-      <div className="cottage-menu" style={{ left: x, top: y }} role="menu">
+      <div className="skin-menu-mask" onClick={onClose} onContextMenu={(e) => { e.preventDefault(); onClose() }} />
+      <div className="skin-menu" style={{ left: x, top: y }} role="menu">
         {items.map((item) => (
           <button
             key={item.id}
@@ -218,19 +218,19 @@ function SessionRow({
 }): React.ReactElement {
   return (
     <div
-      className={'cottage-archive-item' + (menuOpen ? ' menu-open' : '')}
+      className={'skin-archive-item' + (menuOpen ? ' menu-open' : '')}
       role="treeitem"
       aria-selected={false}
       onClick={() => onOpen(item.sessionId)}
     >
-      <span className="cottage-archive-title" title={item.title}>
+      <span className="skin-archive-title" title={item.title}>
         {item.title}
       </span>
-      <span className="cottage-archive-time">{timeAgo(item.updatedAt ?? item.createdAt)}</span>
-      <span className="cottage-archive-actions">
+      <span className="skin-archive-time">{timeAgo(item.updatedAt ?? item.createdAt)}</span>
+      <span className="skin-archive-actions">
         <button
           type="button"
-          className="cottage-archive-more"
+          className="skin-archive-more"
           aria-label="会话操作"
           disabled={busy === item.sessionId}
           onClick={(e) => {
@@ -402,10 +402,10 @@ export function ArchiveView({
   }
 
   return (
-    <div className="cottage-archive" onClick={(e) => e.stopPropagation()} onKeyDown={(e) => e.stopPropagation()}>
-      {error && <div className="cottage-archive-error">{error}</div>}
-      <div className="cottage-archive-list">
-        {total === 0 && <div className="cottage-archive-empty">暂无归档会话</div>}
+    <div className="skin-archive" onClick={(e) => e.stopPropagation()} onKeyDown={(e) => e.stopPropagation()}>
+      {error && <div className="skin-archive-error">{error}</div>}
+      <div className="skin-archive-list">
+        {total === 0 && <div className="skin-archive-empty">暂无归档会话</div>}
         {flat !== null &&
           flat.map((item) => (
             <SessionRow
@@ -423,9 +423,9 @@ export function ArchiveView({
           data.groups.map((group) => {
             const isExpanded = expanded[group.workspaceId] !== false
             return (
-              <div key={group.workspaceId} className="cottage-archive-group">
+              <div key={group.workspaceId} className="skin-archive-group">
                 <div
-                  className="cottage-archive-group-title"
+                  className="skin-archive-group-title"
                   role="treeitem"
                   aria-expanded={isExpanded}
                   onClick={() => {
@@ -434,16 +434,16 @@ export function ArchiveView({
                     writeGroupExpansion(group.workspaceId, next)
                   }}
                 >
-                  <span className={'cottage-archive-folder' + (isExpanded ? ' open' : '')}>
+                  <span className={'skin-archive-folder' + (isExpanded ? ' open' : '')}>
                     {isExpanded ? <IconFolderOpen /> : <IconFolderClose />}
                   </span>
-                  <span className="cottage-archive-chevron">
-                    <span className={'cottage-archive-arrow' + (isExpanded ? ' open' : '')}>
+                  <span className="skin-archive-chevron">
+                    <span className={'skin-archive-arrow' + (isExpanded ? ' open' : '')}>
                       <IconTriangle />
                     </span>
                   </span>
-                  <span className="cottage-archive-project">
-                    <span className="cottage-archive-title">{group.title}</span>
+                  <span className="skin-archive-project">
+                    <span className="skin-archive-title">{group.title}</span>
                   </span>
                 </div>
                 {isExpanded &&
@@ -464,18 +464,18 @@ export function ArchiveView({
           })}
         {flat === null &&
           data.ungrouped.length > 0 && (
-            <div className="cottage-archive-group">
-              <div className="cottage-archive-group-title" role="treeitem" aria-expanded>
-                <span className="cottage-archive-folder open">
+            <div className="skin-archive-group">
+              <div className="skin-archive-group-title" role="treeitem" aria-expanded>
+                <span className="skin-archive-folder open">
                   <IconFolderOpen />
                 </span>
-                <span className="cottage-archive-chevron">
-                  <span className="cottage-archive-arrow open">
+                <span className="skin-archive-chevron">
+                  <span className="skin-archive-arrow open">
                     <IconTriangle />
                   </span>
                 </span>
-                <span className="cottage-archive-project">
-                  <span className="cottage-archive-title">未分组</span>
+                <span className="skin-archive-project">
+                  <span className="skin-archive-title">未分组</span>
                 </span>
               </div>
               {sortSessions(data.ungrouped).map((item) => (
@@ -523,7 +523,7 @@ export function ArchiveView({
         }
       >
         <input
-          className="cottage-rename-input"
+          className="skin-rename-input"
           value={renameDraft}
           aria-label="会话名称"
           autoFocus
@@ -549,7 +549,7 @@ export function ArchiveView({
           }}
         />
         {renameError !== null && (
-          <div className="cottage-rename-error" role="alert">
+          <div className="skin-rename-error" role="alert">
             {renameError}
           </div>
         )}
@@ -571,7 +571,7 @@ export function ArchiveView({
             </Button>
             <Button
               variant="outline"
-              className="cottage-delete-action"
+              className="skin-delete-action"
               disabled={deleting}
               onClick={confirmDelete}
             >
@@ -581,12 +581,12 @@ export function ArchiveView({
         }
       >
         {deleting && (
-          <div className="cottage-delete-status" role="status">
+          <div className="skin-delete-status" role="status">
             正在删除会话…
           </div>
         )}
         {deleteError !== null && (
-          <div className="cottage-rename-error" role="alert">
+          <div className="skin-rename-error" role="alert">
             {deleteError}
           </div>
         )}

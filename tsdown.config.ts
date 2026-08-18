@@ -2,7 +2,7 @@
 // input  = lib/client/index.js (tsc client program output)
 // output = lib/client.js (CJS closure-factory, window.__ModuleLoader__.load format)
 import { defineConfig } from 'tsdown'
-import { cottageInlinePlugin } from './scripts/cottage-inline-plugin.mjs'
+import { skinInlinePlugin } from './scripts/skin-inline-plugin.mjs'
 
 export default defineConfig({
   name: '@crack/dsh-web-ui-skin/client',
@@ -18,7 +18,7 @@ export default defineConfig({
   clean: false,
   minify: false,
   hash: false,
-  plugins: [cottageInlinePlugin()],
+  plugins: [skinInlinePlugin()],
   outputOptions: {
     entryFileNames: 'client.js',
     banner: 'window.__ModuleLoader__.load({ id: "@crack/dsh-web-ui-skin", factory: (require) => {',

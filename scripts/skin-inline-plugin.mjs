@@ -1,19 +1,19 @@
-// tsdown plugin: inline cottage.css into the client bundle and emit the
+// tsdown plugin: inline skin.css into the client bundle and emit the
 // same <style data-plugin> injection the original hand-written build-client.js
 // produced. Pure global CSS (:global), no class map. The wallpaper itself is
-// no longer inlined: the host route (src/index.ts) serves assets/cottage-bg.jpg.
+// no longer inlined: the host route (src/index.ts) serves assets/bg.jpg.
 import { readFileSync } from 'node:fs'
 import { resolve, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
-const CSS_PATH = resolve(__dirname, '../src/client/cottage.css')
+const CSS_PATH = resolve(__dirname, '../src/client/skin.css')
 const PLUGIN_ID = '@crack/dsh-web-ui-skin'
-const CSS_TAG_ID = PLUGIN_ID + '/cottage.css'
+const CSS_TAG_ID = PLUGIN_ID + '/skin.css'
 
-export function cottageInlinePlugin() {
+export function skinInlinePlugin() {
   return {
-    name: 'cottage-inline',
+    name: 'skin-inline',
     banner() {
       const css = readFileSync(CSS_PATH, 'utf8').replace(/\n{3,}/g, '\n\n')
       return [

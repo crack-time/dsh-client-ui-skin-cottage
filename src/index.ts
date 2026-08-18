@@ -30,19 +30,19 @@ import type { SessionTitleService } from '@deepseek-ai/dsh-session-title'
 import z from '@deepseek-ai/schemastery'
 import { settingsNamespace, type SettingsScope } from '@deepseek-ai/dsh-settings'
 
-const BG_PATH = fileURLToPath(new URL('../assets/cottage-bg.jpg', import.meta.url))
+const BG_PATH = fileURLToPath(new URL('../assets/bg.jpg', import.meta.url))
 const BG_ROUTE = '/plugins/@crack/dsh-web-ui-skin/bg.jpg'
 const API_PREFIX = '/plugins/@crack/dsh-web-ui-skin/api'
 
 /**
  * Settings card for this skin (surfaced by dsh rc.7's settings page under
- * the "cottage" namespace; changes apply live, no restart needed):
+ * the "skin" namespace; changes apply live, no restart needed):
  *  - wallpaperUrl: custom wallpaper over the bundled asset (empty = asset);
  *  - glassOpacity: frosted-glass strength of the translucent panels
- *    (client maps it onto the `--cottage-glass` token family);
+ *    (client maps it onto the `--skin-glass` token family);
  *  - archiveButton: show/hide the sidebar archive entry.
  */
-const COTTAGE_SETTINGS_SCHEMA = z.object({
+const SKIN_SETTINGS_SCHEMA = z.object({
   wallpaperUrl: z.string().default(''),
   glassOpacity: z.number().min(0).max(1).default(0.48),
   archiveButton: z.boolean().default(true),
@@ -408,7 +408,7 @@ async function handleApi(
       return sendJson(res, 200, settings.get())
     }
     if (method === 'POST' && url.pathname === API_PREFIX + '/config') {
-      // The settings card's write path: a JSON patch over the "cottage"
+      // The settings card's write path: a JSON patch over the "skin"
       // namespace user layer. Goes through ctx.settings.update so the schema
       // validates it, the revision bumps, and `settings/document-updated`
       // fans out to every browser half (card + skin) for a live apply.
@@ -429,7 +429,7 @@ async function handleApi(
       try {
         return sendJson(res, 200, await listMentionFiles(ctx, sessionId, dir, q))
       } catch (error) {
-        ctx.logger.warn('cottage skin: mention files list failed', error)
+        ctx.logger.warn('skin: mention files list failed', error)
         return sendJson(res, 200, {
           cwd: null,
           dir,
@@ -461,18 +461,18 @@ async function handleApi(
     sendJson(res, 404, { error: 'not found' })
   } catch (error) {
     const status = typeof (error as { code?: unknown })?.code === 'number' ? (error as { code: number }).code : 500
-    ctx.logger.warn('cottage skin api:', error)
+    ctx.logger.warn('skin api:', error)
     sendJson(res, status, { error: error instanceof Error ? error.message : String(error) })
   }
 }
 
 function apply(ctx: Context) {
-  // Register the "cottage" settings namespace: dsh rc.7 renders it as a
+  // Register the "skin" settings namespace: dsh rc.7 renders it as a
   // settings card automatically (schemastery schema → form). `applies: 'live'`
   // means card edits reach the client immediately via document-updated.
   const settings = ctx.settings.register(
-    settingsNamespace('cottage'),
-    COTTAGE_SETTINGS_SCHEMA,
+    settingsNamespace('skin'),
+    SKIN_SETTINGS_SCHEMA,
     { applies: 'live' },
   )
   ctx.effect(() => {
@@ -489,7 +489,7 @@ function apply(ctx: Context) {
             })
             res.end(body)
           } catch (error) {
-            ctx.logger.warn('cottage skin: failed to serve wallpaper', error)
+            ctx.logger.warn('skin: failed to serve wallpaper', error)
             res.writeHead(404)
             res.end()
           }
@@ -502,7 +502,7 @@ function apply(ctx: Context) {
       } satisfies WebRoute),
     ]
     return () => disposers.forEach((dispose) => dispose())
-  }, 'ui-skin-cottage: wallpaper + archive api')
+  }, 'dsh-web-ui-skin: wallpaper + archive api')
 }
 
 export { apply, inject }

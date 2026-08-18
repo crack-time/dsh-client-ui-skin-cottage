@@ -1,11 +1,11 @@
 import type { ClientContext } from '@deepseek-ai/dsh-client-runtime/client';
 /**
- * Settings-dialog card for the "cottage" skin namespace (dsh rc.7 feature).
+ * Settings-dialog card for the "skin" skin namespace (dsh rc.7 feature).
  *
  * The host registers the namespace (ctx.settings.register) and serves
  * GET/POST /api/config; the settings dialog's "configurable plugins" tab
  * dispatches the `settings.plugin.item` slot BY namespace key, so this card
- * must be registered into that slot with `key: 'cottage'` to show up. The
+ * must be registered into that slot with `key: 'skin'` to show up. The
  * slot system renders our component with `t` (bound to our locale dict) plus
  * whatever `inject()` returns (here: a uSES snapshot hook + applyPatch).
  *
@@ -17,26 +17,26 @@ import type { ClientContext } from '@deepseek-ai/dsh-client-runtime/client';
  * chrome is re-implemented here with the same class names' CSS values.
  */
 /** The three knobs the card edits — keep in sync with the host schema. */
-export interface CottageSettings {
+export interface SkinSettings {
     wallpaperUrl: string;
     glassOpacity: number;
     archiveButton: boolean;
 }
-export declare const COTTAGE_DEFAULTS: CottageSettings;
+export declare const SKIN_DEFAULTS: SkinSettings;
 /** Snapshot the card renders from; `loaded` flips once the first read landed. */
-export type CottageCardState = CottageSettings & {
+export type SkinCardState = SkinSettings & {
     loaded: boolean;
 };
 /** Host endpoint for the URL field's settings read/write. */
-export declare const COTTAGE_CONFIG_URL = "/plugins/@crack/dsh-web-ui-skin/api/config";
+export declare const SKIN_CONFIG_URL = "/plugins/@crack/dsh-web-ui-skin/api/config";
 /** Tiny uSES-compatible snapshot store; the slot system exposes `hooks.*` as `use*`. */
-export declare function createCottageCardStore(): {
-    getSnapshot: () => CottageCardState;
-    set(next: CottageCardState): void;
+export declare function createSkinCardStore(): {
+    getSnapshot: () => SkinCardState;
+    set(next: SkinCardState): void;
     subscribe(listener: () => void): () => void;
 };
 /** Locale dictionary for the card (title / description / labels / hints). */
-export declare const COTTAGE_CARD_LOCALE: {
+export declare const SKIN_CARD_LOCALE: {
     readonly zh: {
         readonly title: '壁纸';
         readonly description: '壁纸设置';
@@ -72,21 +72,21 @@ export declare const COTTAGE_CARD_LOCALE: {
         readonly saveFailed: 'Save failed, please retry';
     };
 };
-export type CottageCardProps = {
+export type SkinCardProps = {
     t: (key: string) => string;
-    useCottageCard: <T>(select: (state: CottageCardState) => T) => T;
-    applyPatch: (patch: Partial<CottageSettings>) => Promise<{
+    useSkinCard: <T>(select: (state: SkinCardState) => T) => T;
+    applyPatch: (patch: Partial<SkinSettings>) => Promise<{
         ok: boolean;
         error?: string;
     }>;
 };
-/** The settings-dialog card for the cottage namespace (slot key 'cottage'). */
-export declare function CottageSettingsCard(props: CottageCardProps): import("react").JSX.Element | null;
+/** The settings-dialog card for the skin namespace (slot key 'skin'). */
+export declare function SkinSettingsCard(props: SkinCardProps): import("react").JSX.Element | null;
 /**
  * Register the card into the settings dialog:
  *  - locale dictionary under a namespace we own;
- *  - one `settings.plugin.item` slot entry keyed by the 'cottage' namespace.
+ *  - one `settings.plugin.item` slot entry keyed by the 'skin' namespace.
  * The dialog dispatches it only while the host serves that namespace, so our
  * own registration stays invisible if the settings service is absent.
  */
-export declare function installCottageSettingsCard(ctx: ClientContext, store: ReturnType<typeof createCottageCardStore>): void;
+export declare function installSkinSettingsCard(ctx: ClientContext, store: ReturnType<typeof createSkinCardStore>): void;

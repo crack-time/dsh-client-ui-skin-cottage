@@ -9,7 +9,7 @@
  * (Safari/Firefox) simply keep the default wallpaper.
  */
 
-const DB_NAME = 'cottage-skin'
+const DB_NAME = 'dsh-web-ui-skin'
 const DB_VERSION = 1
 const STORE = 'wallpaper'
 const KEY = 'picked'

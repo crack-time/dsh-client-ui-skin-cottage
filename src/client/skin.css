@@ -5,7 +5,7 @@
    ============================================ */
 
 /* === 亮色版 === */
-body[data-dsh-cottage] {
+body[data-dsh-skin] {
   /* 壁纸全屏铺底 */
   background-color: #3a6ea5;
   background-size: cover;
@@ -15,27 +15,27 @@ body[data-dsh-cottage] {
 }
 
 /* ---- #root 容器：透明背景让壁纸透出来 ---- */
-body[data-dsh-cottage] #root {
+body[data-dsh-skin] #root {
   background: transparent !important;
 }
 
 /* ============================================
    Design Token 覆盖 — 亮色
    ============================================ */
-body[data-dsh-cottage] {
+body[data-dsh-skin] {
   /* 品牌色：天空蓝 */
   --dsw-alias-brand-primary: #5a9fd4;
   --dsw-alias-brand-primary-invert: #fff;
   --dsw-alias-brand-text: #4a8fc4;
 
   /* 背景：半透明毛玻璃 */
-  /* 毛玻璃强度（0..1）：由设置卡片的 glassOpacity 通过 --cottage-glass 覆盖
+  /* 毛玻璃强度（0..1）：由设置卡片的 glassOpacity 通过 --skin-glass 覆盖
      （客户端内联设置；未设置时用各 token 自己的回退值，等于原外观） */
-  --cottage-glass: 0.48;
-  --dsw-alias-bg-base: rgba(255, 255, 255, var(--cottage-glass, 0.48));
-  --dsw-alias-bg-layer-1: rgba(255, 255, 255, var(--cottage-glass, 0.42));
+  --skin-glass: 0.48;
+  --dsw-alias-bg-base: rgba(255, 255, 255, var(--skin-glass, 0.48));
+  --dsw-alias-bg-layer-1: rgba(255, 255, 255, var(--skin-glass, 0.42));
   --dsw-alias-bg-layer-2: rgba(250, 249, 247, 0.90);
-  --dsw-alias-bg-layer-3: rgba(240, 237, 230, var(--cottage-glass, 0.48));
+  --dsw-alias-bg-layer-3: rgba(240, 237, 230, var(--skin-glass, 0.48));
   --dsw-alias-bg-overlay: rgba(255, 255, 255, 0.68);
   --dsw-alias-bg-mask-1: rgba(0, 0, 0, 0.45);
 
@@ -62,10 +62,10 @@ body[data-dsh-cottage] {
   --dsw-alias-button-contrast-fill: #3a6ea5;
 
   /* 侧边栏 */
-  --dsw-specific-sidebar-fill: rgba(248, 245, 240, var(--cottage-glass, 0.42));
+  --dsw-specific-sidebar-fill: rgba(248, 245, 240, var(--skin-glass, 0.42));
 
   /* 聊天气泡 */
-  --dsw-specific-bubble: rgba(255, 255, 255, var(--cottage-glass, 0.48));
+  --dsw-specific-bubble: rgba(255, 255, 255, var(--skin-glass, 0.48));
   --dsw-specific-bubble-highlight: rgba(90, 159, 212, 0.12);
 
   /* 输入框 */
@@ -87,15 +87,15 @@ body[data-dsh-cottage] {
 /* ============================================
    Design Token 覆盖 — 暗色
    ============================================ */
-body[data-dsh-cottage][data-ds-dark-theme] {
+body[data-dsh-skin][data-ds-dark-theme] {
   --dsw-alias-brand-primary: #7ab8e8;
   --dsw-alias-brand-primary-invert: #1a2a3a;
   --dsw-alias-brand-text: #7ab8e8;
 
-  --dsw-alias-bg-base: rgba(18, 22, 30, var(--cottage-glass, 0.52));
-  --dsw-alias-bg-layer-1: rgba(22, 26, 34, var(--cottage-glass, 0.50));
+  --dsw-alias-bg-base: rgba(18, 22, 30, var(--skin-glass, 0.52));
+  --dsw-alias-bg-layer-1: rgba(22, 26, 34, var(--skin-glass, 0.50));
   --dsw-alias-bg-layer-2: rgba(26, 30, 38, 0.90);
-  --dsw-alias-bg-layer-3: rgba(30, 34, 42, var(--cottage-glass, 0.46));
+  --dsw-alias-bg-layer-3: rgba(30, 34, 42, var(--skin-glass, 0.46));
   --dsw-alias-bg-overlay: rgba(20, 24, 32, 0.72);
   --dsw-alias-bg-mask-1: rgba(0, 0, 0, 0.55);
 
@@ -117,8 +117,8 @@ body[data-dsh-cottage][data-ds-dark-theme] {
   --dsw-alias-button-elevated-fill: rgba(30, 34, 42, 0.62);
   --dsw-alias-button-contrast-fill: #7ab8e8;
 
-  --dsw-specific-sidebar-fill: rgba(22, 26, 34, var(--cottage-glass, 0.52));
-  --dsw-specific-bubble: rgba(26, 30, 38, var(--cottage-glass, 0.50));
+  --dsw-specific-sidebar-fill: rgba(22, 26, 34, var(--skin-glass, 0.52));
+  --dsw-specific-bubble: rgba(26, 30, 38, var(--skin-glass, 0.50));
   --dsw-specific-bubble-highlight: rgba(122, 184, 232, 0.12);
   --dsw-specific-input-major: rgba(18, 22, 30, 0.85);
   --dsw-specific-menu: #161a22;
@@ -135,7 +135,7 @@ body[data-dsh-cottage][data-ds-dark-theme] {
    中央聊天区：父容器全透明，壁纸全显示
    （子区域保持现状：气泡/输入卡半透明不变）
    ============================================ */
-body[data-dsh-cottage] .wSkVaW_root {
+body[data-dsh-skin] .wSkVaW_root {
   background: transparent;
 }
 
@@ -143,7 +143,7 @@ body[data-dsh-cottage] .wSkVaW_root {
    布局框架（frame）：全透明，壁纸全显示
    （侧栏/详情列有自己的背景，不受影响）
    ============================================ */
-body[data-dsh-cottage] .pI_x6G_frame {
+body[data-dsh-skin] .pI_x6G_frame {
   background: transparent;
 }
 
@@ -155,7 +155,7 @@ body[data-dsh-cottage] .pI_x6G_frame {
    ============================================ */
 /* width:100% + max-width：作为 flex 子项带 margin:0 auto 时不会被拉伸，
    若只靠 max-width 宽度会退化到内容宽度（加载历史时缩成窄条） */
-body[data-dsh-cottage]:not(:has(.qBU-ya_root)) .wSkVaW_scrollBody {
+body[data-dsh-skin]:not(:has(.qBU-ya_root)) .wSkVaW_scrollBody {
   width: 100%;
   /* 背景与输入座位同宽（812px）；文本列有 max-width:748 自行封顶 */
   max-width: calc(var(--dsh-composer-card-max-width) + 2 * var(--dsh-composer-side-clearance));
@@ -171,14 +171,14 @@ body[data-dsh-cottage]:not(:has(.qBU-ya_root)) .wSkVaW_scrollBody {
 
 /* 新建对话（hero 欢迎态）：解除面板约束，恢复 dsh 全宽布局
    （hero 内容本就以 780px 居中，不再套白色面板） */
-body[data-dsh-cottage] .wSkVaW_root[data-phase="hero"] .wSkVaW_scrollBody {
+body[data-dsh-skin] .wSkVaW_root[data-phase="hero"] .wSkVaW_scrollBody {
   max-width: none;
   margin: 0;
   background: transparent;
 }
 
 /* 滚动区内边距收窄到 16px，让消息内容正好 748px（默认 32px 会挤窄） */
-body[data-dsh-cottage] .Md3f7G_scroll {
+body[data-dsh-skin] .Md3f7G_scroll {
   padding: 16px;
 }
 
@@ -189,7 +189,7 @@ body[data-dsh-cottage] .Md3f7G_scroll {
    文本不会穿到其后；整条共用文本列同款白色背景。
    hero/其他阶段不约束，保持 dsh 原布局
    ============================================ */
-body[data-dsh-cottage] .wSkVaW_root[data-phase="active"] .wSkVaW_composerSeat {
+body[data-dsh-skin] .wSkVaW_root[data-phase="active"] .wSkVaW_composerSeat {
   width: 100%;
   /* 比消息面板宽 32px（= 卡片左右内边距），让输入卡恢复 dsh 默认 780px */
   max-width: calc(var(--dsh-composer-card-max-width) + 2 * var(--dsh-composer-side-clearance));
@@ -206,7 +206,7 @@ body[data-dsh-cottage] .wSkVaW_root[data-phase="active"] .wSkVaW_composerSeat {
    会话统计条：放宽到与座位同宽（780px），
    内边距收窄，完整展示统计文本不被省略号截断
    ============================================ */
-body[data-dsh-cottage] .FJxK0a_root {
+body[data-dsh-skin] .FJxK0a_root {
   max-width: var(--dsh-composer-card-max-width);
   padding: 4px 4px 0;
   font-size: 12px;
@@ -215,7 +215,7 @@ body[data-dsh-cottage] .FJxK0a_root {
 /* 原生"回到底部"按钮：滚动容器保持为 scrollBody，原生显隐逻辑
    有效；仅改为水平居中、贴输入框上方 16px（默认右对齐且按
    152px 输入框高度预留偏移） */
-body[data-dsh-cottage] [data-conversation-scroll] .Md3f7G_toBottomSlot {
+body[data-dsh-skin] [data-conversation-scroll] .Md3f7G_toBottomSlot {
   bottom: 16px;
   justify-content: center;
   padding-right: 0;
@@ -224,7 +224,7 @@ body[data-dsh-cottage] [data-conversation-scroll] .Md3f7G_toBottomSlot {
 /* ============================================
    顶部标题栏：透明度与中间文本区一致
    ============================================ */
-body[data-dsh-cottage] .wSkVaW_header {
+body[data-dsh-skin] .wSkVaW_header {
   background: var(--dsw-specific-input-major);
 }
 
@@ -233,10 +233,10 @@ body[data-dsh-cottage] .wSkVaW_header {
    （布局列 .pI_x6G_sidebarCol 保持透明，
     侧栏根 .hHd-Xa_root 使用 input-major）
    ============================================ */
-body[data-dsh-cottage] .pI_x6G_sidebarCol {
+body[data-dsh-skin] .pI_x6G_sidebarCol {
   background: transparent;
 }
-body[data-dsh-cottage] .hHd-Xa_root {
+body[data-dsh-skin] .hHd-Xa_root {
   background: var(--dsw-specific-input-major);
 }
 
@@ -244,7 +244,7 @@ body[data-dsh-cottage] .hHd-Xa_root {
    会话列表底部渐隐条：渐隐进 sidebar-fill 颜色，
    在壁纸上形成白色边界，去掉
    ============================================ */
-body[data-dsh-cottage] .qDHVXG_fade {
+body[data-dsh-skin] .qDHVXG_fade {
   display: none;
 }
 
@@ -252,24 +252,24 @@ body[data-dsh-cottage] .qDHVXG_fade {
    侧栏折叠按钮微调
    ============================================ */
 /* 展开态：折叠按钮略左移，不贴右缘 */
-body[data-dsh-cottage] .hHd-Xa_logoRow > button:last-child {
+body[data-dsh-skin] .hHd-Xa_logoRow > button:last-child {
   margin-right: 7px;
 }
 
 /* ============================================
    滚动条美化
    ============================================ */
-body[data-dsh-cottage] ::-webkit-scrollbar {
+body[data-dsh-skin] ::-webkit-scrollbar {
   width: 6px;
 }
-body[data-dsh-cottage] ::-webkit-scrollbar-track {
+body[data-dsh-skin] ::-webkit-scrollbar-track {
   background: transparent;
 }
-body[data-dsh-cottage] ::-webkit-scrollbar-thumb {
+body[data-dsh-skin] ::-webkit-scrollbar-thumb {
   background: rgba(90, 159, 212, 0.3);
   border-radius: 3px;
 }
-body[data-dsh-cottage] ::-webkit-scrollbar-thumb:hover {
+body[data-dsh-skin] ::-webkit-scrollbar-thumb:hover {
   background: rgba(90, 159, 212, 0.5);
 }
 /* ============================================
@@ -279,7 +279,7 @@ body[data-dsh-cottage] ::-webkit-scrollbar-thumb:hover {
    注意：从轨迹页打开的弹层挂在 body 上，会继承
    皮肤 token（玻璃效果），此为已知取舍
    ============================================ */
-body[data-dsh-cottage] .qBU-ya_root {
+body[data-dsh-skin] .qBU-ya_root {
   --dsw-alias-bg-base: var(--dsw-static-neutral-bluish-00);
   --dsw-alias-bg-layer-1: var(--dsw-static-neutral-bluish-00);
   --dsw-alias-bg-layer-2: var(--dsw-static-neutral-bluish-00);
@@ -321,7 +321,7 @@ body[data-dsh-cottage] .qBU-ya_root {
   --dsw-specific-sidebar-fill: var(--dsw-static-neutral-bluish-50);
 }
 
-body[data-dsh-cottage][data-ds-dark-theme] .qBU-ya_root {
+body[data-dsh-skin][data-ds-dark-theme] .qBU-ya_root {
   --dsw-alias-bg-base: var(--dsw-static-neutral-bluish-950);
   --dsw-alias-bg-layer-1: var(--dsw-static-neutral-bluish-875);
   --dsw-alias-bg-layer-2: var(--dsw-static-neutral-bluish-850);
@@ -364,14 +364,14 @@ body[data-dsh-cottage][data-ds-dark-theme] .qBU-ya_root {
 }
 
 /* 轨迹页内滚动条滑块还原默认颜色 */
-body[data-dsh-cottage] .qBU-ya_root ::-webkit-scrollbar-thumb {
+body[data-dsh-skin] .qBU-ya_root ::-webkit-scrollbar-thumb {
   background: var(--dsw-alias-scrollbar-bg-l2);
 }
-body[data-dsh-cottage] .qBU-ya_root ::-webkit-scrollbar-thumb:hover {
+body[data-dsh-skin] .qBU-ya_root ::-webkit-scrollbar-thumb:hover {
   background: var(--dsw-alias-scrollbar-hover-l2);
 }
 /* 侧边栏归档入口按钮（添加工作区右侧） */
-body[data-dsh-cottage] button[data-cottage-archive-btn] {
+body[data-dsh-skin] button[data-skin-archive-btn] {
   /* 与原生 iconButton 一致：28px 圆形、label-secondary、hover 同款背景 */
   position: relative;
   display: inline-flex;
@@ -388,16 +388,16 @@ body[data-dsh-cottage] button[data-cottage-archive-btn] {
   flex: none;
   transition: background 0.12s ease;
 }
-body[data-dsh-cottage] button[data-cottage-archive-btn] svg {
+body[data-dsh-skin] button[data-skin-archive-btn] svg {
   display: block;
 }
-body[data-dsh-cottage] button[data-cottage-archive-btn]:hover {
+body[data-dsh-skin] button[data-skin-archive-btn]:hover {
   background: var(--dsw-alias-interactive-bg-hover);
 }
-body[data-dsh-cottage] button[data-cottage-archive-btn]:hover {
+body[data-dsh-skin] button[data-skin-archive-btn]:hover {
   background: rgba(90, 159, 212, 0.18);
 }
-body[data-dsh-cottage] button[data-cottage-archive-btn]:active {
+body[data-dsh-skin] button[data-skin-archive-btn]:active {
   transform: scale(0.92);
 }
 /* ============================================
@@ -405,11 +405,11 @@ body[data-dsh-cottage] button[data-cottage-archive-btn]:active {
  |  原位覆盖工作区列表区域 · 布局与原生树一致
  |  ============================================ */
 /* 工具行解除 60px 宽度限制：第 4 个（归档）按钮不被裁剪，整体左移排列 */
-body[data-dsh-cottage] [class*="_headerActions"] {
+body[data-dsh-skin] [class*="_headerActions"] {
   max-width: none !important;
 }
 /* 覆盖层容器：absolute 铺满树区域 */
-body[data-dsh-cottage] [data-cottage-archive-view] {
+body[data-dsh-skin] [data-skin-archive-view] {
   position: absolute;
   inset: 0;
   display: flex;
@@ -419,7 +419,7 @@ body[data-dsh-cottage] [data-cottage-archive-view] {
   background: transparent;
   overflow: hidden;
 }
-body[data-dsh-cottage] .cottage-archive {
+body[data-dsh-skin] .skin-archive {
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -427,18 +427,18 @@ body[data-dsh-cottage] .cottage-archive {
   color: #2b4259;
 }
 /* 视图模式标签（跟随原生视图选项的只读显示） */
-body[data-dsh-cottage] .cottage-archive-viewmode {
+body[data-dsh-skin] .skin-archive-viewmode {
   font-size: 11px;
   color: var(--dsw-alias-label-tertiary, #8aa3ba);
   white-space: nowrap;
 }
 /* 上下文菜单（portal 到 body） */
-body[data-dsh-cottage] .cottage-menu-mask {
+body[data-dsh-skin] .skin-menu-mask {
   position: fixed;
   inset: 0;
   z-index: 2147483010;
 }
-body[data-dsh-cottage] .cottage-menu {
+body[data-dsh-skin] .skin-menu {
   position: fixed;
   z-index: 2147483011;
   min-width: 132px;
@@ -451,7 +451,7 @@ body[data-dsh-cottage] .cottage-menu {
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
 }
-body[data-dsh-cottage] .cottage-menu button {
+body[data-dsh-skin] .skin-menu button {
   display: block;
   width: 100%;
   text-align: left;
@@ -463,18 +463,18 @@ body[data-dsh-cottage] .cottage-menu button {
   border-radius: 7px;
   cursor: pointer;
 }
-body[data-dsh-cottage] .cottage-menu button:hover {
+body[data-dsh-skin] .skin-menu button:hover {
   background: var(--dsw-alias-interactive-bg-hover, rgba(90, 159, 212, 0.12));
 }
-body[data-dsh-cottage] .cottage-menu button.danger {
+body[data-dsh-skin] .skin-menu button.danger {
   color: var(--dsw-alias-danger, #c05a5a);
 }
-body[data-dsh-cottage] .cottage-menu button.danger:hover {
+body[data-dsh-skin] .skin-menu button.danger:hover {
   background: rgba(200, 90, 90, 0.1);
 }
 
 /* 分组标题行：对齐原生 projectRow（可点击折叠、hover 背景、箭头旋转） */
-body[data-dsh-cottage] .cottage-archive-group-title {
+body[data-dsh-skin] .skin-archive-group-title {
   display: flex;
   align-items: center;
   gap: 4px;
@@ -486,31 +486,31 @@ body[data-dsh-cottage] .cottage-archive-group-title {
   font-size: 13px;
   transition: background 0.12s ease;
 }
-body[data-dsh-cottage] .cottage-archive-group-title:hover {
+body[data-dsh-skin] .skin-archive-group-title:hover {
   background: var(--dsw-alias-interactive-bg-hover, rgba(90, 159, 212, 0.1));
 }
-body[data-dsh-cottage] .cottage-archive-folder {
+body[data-dsh-skin] .skin-archive-folder {
   font-size: 14px;
   line-height: 1;
   flex: none;
 }
-body[data-dsh-cottage] .cottage-archive-arrow {
+body[data-dsh-skin] .skin-archive-arrow {
   font-size: 10px;
   color: var(--dsw-alias-label-secondary, #4a6a8c);
   transform: rotate(0deg);
   transition: transform 0.15s var(--ds-ease-in-out, ease);
   flex: none;
 }
-body[data-dsh-cottage] .cottage-archive-arrow.open {
+body[data-dsh-skin] .skin-archive-arrow.open {
   transform: rotate(90deg);
 }
-body[data-dsh-cottage] .cottage-archive-group-name {
+body[data-dsh-skin] .skin-archive-group-name {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 /* 会话行可点击 */
-body[data-dsh-cottage] .cottage-archive-item {
+body[data-dsh-skin] .skin-archive-item {
   cursor: pointer;
 }
 /* ============================================
@@ -518,7 +518,7 @@ body[data-dsh-cottage] .cottage-archive-item {
  |  （行/分组行结构与原生一致：hover 背景、
  |   分组行 hover 文件夹→箭头、会话行 hover 时间隐藏）
  |  ============================================ */
-body[data-dsh-cottage] .cottage-archive-error {
+body[data-dsh-skin] .skin-archive-error {
   padding: 8px 10px;
   font-size: 12px;
   color: var(--dsw-alias-state-error-primary, #a05a5a);
@@ -526,28 +526,28 @@ body[data-dsh-cottage] .cottage-archive-error {
   border-bottom: 1px solid rgba(200, 90, 90, 0.15);
   flex: none;
 }
-body[data-dsh-cottage] .cottage-archive-list {
+body[data-dsh-skin] .skin-archive-list {
   min-height: 0;
   flex: 1;
   overflow-y: auto;
   padding: 0 4px 16px;
 }
-body[data-dsh-cottage] .cottage-archive-group {
+body[data-dsh-skin] .skin-archive-group {
   position: relative;
 }
-body[data-dsh-cottage] .cottage-archive-group + .cottage-archive-group {
+body[data-dsh-skin] .skin-archive-group + .skin-archive-group {
   margin-top: 4px;
 }
-body[data-dsh-cottage] .cottage-archive-group > * + * {
+body[data-dsh-skin] .skin-archive-group > * + * {
   margin-top: 2px;
 }
-body[data-dsh-cottage] .cottage-archive-empty {
+body[data-dsh-skin] .skin-archive-empty {
   color: var(--dsw-alias-label-tertiary);
   padding: 16px 12px;
   font-size: 13px;
 }
 /* 分组行：对齐原生 projectRow */
-body[data-dsh-cottage] .cottage-archive-group-title {
+body[data-dsh-skin] .skin-archive-group-title {
   box-sizing: border-box;
   align-items: center;
   height: 34px;
@@ -560,10 +560,10 @@ body[data-dsh-cottage] .cottage-archive-group-title {
   border-radius: 8px;
   transition: background 0.1s ease;
 }
-body[data-dsh-cottage] .cottage-archive-group-title:hover {
+body[data-dsh-skin] .skin-archive-group-title:hover {
   background: var(--dsw-alias-interactive-bg-hover);
 }
-body[data-dsh-cottage] .cottage-archive-folder {
+body[data-dsh-skin] .skin-archive-folder {
   width: 16px;
   height: 20px;
   color: var(--dsw-alias-label-tertiary);
@@ -573,7 +573,7 @@ body[data-dsh-cottage] .cottage-archive-folder {
   display: inline-flex;
 }
 /* 箭头：默认隐藏，hover 时显示并隐藏文件夹（同原生） */
-body[data-dsh-cottage] .cottage-archive-chevron {
+body[data-dsh-skin] .skin-archive-chevron {
   width: 16px;
   height: 20px;
   color: var(--dsw-alias-label-tertiary);
@@ -582,21 +582,21 @@ body[data-dsh-cottage] .cottage-archive-chevron {
   align-items: center;
   display: none;
 }
-body[data-dsh-cottage] .cottage-archive-group-title:hover .cottage-archive-chevron {
+body[data-dsh-skin] .skin-archive-group-title:hover .skin-archive-chevron {
   display: inline-flex;
 }
-body[data-dsh-cottage] .cottage-archive-group-title:hover .cottage-archive-folder {
+body[data-dsh-skin] .skin-archive-group-title:hover .skin-archive-folder {
   display: none;
 }
-body[data-dsh-cottage] .cottage-archive-arrow {
+body[data-dsh-skin] .skin-archive-arrow {
   display: inline-flex;
   transform: rotate(0deg);
   transition: transform 0.15s var(--ds-ease-in-out, ease);
 }
-body[data-dsh-cottage] .cottage-archive-arrow.open {
+body[data-dsh-skin] .skin-archive-arrow.open {
   transform: rotate(90deg);
 }
-body[data-dsh-cottage] .cottage-archive-project {
+body[data-dsh-skin] .skin-archive-project {
   text-overflow: ellipsis;
   white-space: nowrap;
   min-width: 0;
@@ -604,11 +604,11 @@ body[data-dsh-cottage] .cottage-archive-project {
   line-height: 20px;
   overflow: hidden;
 }
-body[data-dsh-cottage] .cottage-archive-group-title .cottage-archive-title {
+body[data-dsh-skin] .skin-archive-group-title .skin-archive-title {
   margin: 0;
 }
 /* 会话行：对齐原生 sessionRow */
-body[data-dsh-cottage] .cottage-archive-item {
+body[data-dsh-skin] .skin-archive-item {
   cursor: pointer;
   user-select: none;
   color: var(--dsw-alias-label-primary);
@@ -618,18 +618,18 @@ body[data-dsh-cottage] .cottage-archive-item {
   padding: 0 8px;
   display: flex;
   height: 32px;
-  animation: cottage-row-in 0.15s var(--ds-ease-in-out, ease);
+  animation: skin-row-in 0.15s var(--ds-ease-in-out, ease);
 }
-@keyframes cottage-row-in {
+@keyframes skin-row-in {
   from {
     opacity: 0;
   }
 }
-body[data-dsh-cottage] .cottage-archive-item:hover,
-body[data-dsh-cottage] .cottage-archive-item.menu-open {
+body[data-dsh-skin] .skin-archive-item:hover,
+body[data-dsh-skin] .skin-archive-item.menu-open {
   background: var(--dsw-alias-interactive-bg-hover);
 }
-body[data-dsh-cottage] .cottage-archive-item .cottage-archive-title {
+body[data-dsh-skin] .skin-archive-item .skin-archive-title {
   flex: 1;
   margin: 0 6px 0 4px;
   text-overflow: ellipsis;
@@ -639,29 +639,29 @@ body[data-dsh-cottage] .cottage-archive-item .cottage-archive-title {
   line-height: 20px;
   overflow: hidden;
 }
-body[data-dsh-cottage] .cottage-archive-item .cottage-archive-time {
+body[data-dsh-skin] .skin-archive-item .skin-archive-time {
   color: var(--dsw-alias-label-tertiary);
   flex: none;
   font-size: 12px;
   line-height: 20px;
   white-space: nowrap;
 }
-body[data-dsh-cottage] .cottage-archive-item .cottage-archive-actions {
+body[data-dsh-skin] .skin-archive-item .skin-archive-actions {
   flex: none;
   align-items: center;
   gap: 12px;
   display: none;
 }
-body[data-dsh-cottage] .cottage-archive-item:hover .cottage-archive-actions,
-body[data-dsh-cottage] .cottage-archive-item.menu-open .cottage-archive-actions {
+body[data-dsh-skin] .skin-archive-item:hover .skin-archive-actions,
+body[data-dsh-skin] .skin-archive-item.menu-open .skin-archive-actions {
   display: inline-flex;
 }
 /* hover 时时间隐藏（同原生） */
-body[data-dsh-cottage] .cottage-archive-item:hover .cottage-archive-time,
-body[data-dsh-cottage] .cottage-archive-item.menu-open .cottage-archive-time {
+body[data-dsh-skin] .skin-archive-item:hover .skin-archive-time,
+body[data-dsh-skin] .skin-archive-item.menu-open .skin-archive-time {
   display: none;
 }
-body[data-dsh-cottage] .cottage-archive-more {
+body[data-dsh-skin] .skin-archive-more {
   border: none;
   background: transparent;
   color: var(--dsw-alias-label-secondary, #4a6a8c);
@@ -675,17 +675,17 @@ body[data-dsh-cottage] .cottage-archive-more {
   padding: 0;
   flex: none;
 }
-body[data-dsh-cottage] .cottage-archive-more:hover {
+body[data-dsh-skin] .skin-archive-more:hover {
   background: var(--dsw-alias-interactive-bg-hover, rgba(90, 159, 212, 0.18));
 }
-body[data-dsh-cottage] .cottage-archive-more:disabled {
+body[data-dsh-skin] .skin-archive-more:disabled {
   opacity: 0.3;
   cursor: default;
 }
 
 
 /* 归档按钮气泡（fixed 于 body，同原生 Tooltip 机制） */
-body[data-dsh-cottage] .cottage-archive-tip {
+body[data-dsh-skin] .skin-archive-tip {
   position: fixed;
   transform: translateX(-50%);
   background: var(--dsw-alias-tooltip-bg, #1f2937);
@@ -701,7 +701,7 @@ body[data-dsh-cottage] .cottage-archive-tip {
 
 
 /* 重命名对话框输入框（复刻原生 qDHVXG_renameInput 规则，弹窗壳体用原生 Modal） */
-body[data-dsh-cottage] .cottage-rename-input {
+body[data-dsh-skin] .skin-rename-input {
   box-sizing: border-box;
   border: 1px solid var(--dsw-alias-border-l2);
   width: 100%;
@@ -715,10 +715,10 @@ body[data-dsh-cottage] .cottage-rename-input {
   font-weight: 400;
   line-height: 22px;
 }
-body[data-dsh-cottage] .cottage-rename-input:disabled {
+body[data-dsh-skin] .skin-rename-input:disabled {
   color: var(--dsw-alias-label-dimmed);
 }
-body[data-dsh-cottage] .cottage-rename-error {
+body[data-dsh-skin] .skin-rename-error {
   color: var(--dsw-alias-state-error-primary);
   margin-top: 8px;
   font-size: 12px;
@@ -726,10 +726,10 @@ body[data-dsh-cottage] .cottage-rename-error {
 }
 
 /* 删除确认弹窗（复刻原生 qDHVXG_deleteAction / qDHVXG_deleteStatus 规则） */
-body[data-dsh-cottage] .cottage-delete-action:not(:disabled) {
+body[data-dsh-skin] .skin-delete-action:not(:disabled) {
   color: var(--dsw-alias-state-error-primary);
 }
-body[data-dsh-cottage] .cottage-delete-status {
+body[data-dsh-skin] .skin-delete-status {
   color: var(--dsw-alias-label-secondary);
   font-size: 12px;
   line-height: 18px;
@@ -737,32 +737,32 @@ body[data-dsh-cottage] .cottage-delete-status {
 
 /* @ 文件提及菜单：与 / 命令菜单同宽（原生按内容收缩，路径类描述不会撑宽）
    —— 用菜单组标题的 data-source 精准命中文件组，/ 命令菜单不受影响 */
-body[data-dsh-cottage] [role="listbox"]:has([data-source="文件"]) {
+body[data-dsh-skin] [role="listbox"]:has([data-source="文件"]) {
   min-width: min(480px, 100%);
 }
-body[data-dsh-cottage] [role="listbox"]:has([data-source="文件"]) [role="option"] > span:nth-child(2) {
+body[data-dsh-skin] [role="listbox"]:has([data-source="文件"]) [role="option"] > span:nth-child(2) {
   max-width: none;
 }
 
 /* ============================================
-   设置弹窗 · "cottage" 设置卡片（rc.7 插件设置卡片）
+   设置弹窗 · "skin" 设置卡片（rc.7 插件设置卡片）
    卡片外壳样式对齐内置插件卡片（PluginCard.module.css 的同款值）
    ============================================ */
-body[data-dsh-cottage] [data-cottage-settings].cottage-settings-card {
+body[data-dsh-skin] [data-skin-settings].skin-settings-card {
   border: 1px solid var(--dsw-alias-border-l2);
   background: var(--dsw-alias-bg-layer-3);
   border-radius: 12px;
   list-style: none;
   transition: border-color 0.16s, background 0.16s;
 }
-body[data-dsh-cottage] [data-cottage-settings].cottage-settings-card:hover {
+body[data-dsh-skin] [data-skin-settings].skin-settings-card:hover {
   border-color: var(--dsw-alias-label-dimmed);
 }
-body[data-dsh-cottage] [data-cottage-settings].cottage-settings-card-open {
+body[data-dsh-skin] [data-skin-settings].skin-settings-card-open {
   background: var(--dsw-alias-bg-layer-2);
   border-color: var(--dsw-alias-label-dimmed);
 }
-body[data-dsh-cottage] [data-cottage-settings] .cottage-settings-header {
+body[data-dsh-skin] [data-skin-settings] .skin-settings-header {
   appearance: none;
   width: 100%;
   font: inherit;
@@ -777,37 +777,37 @@ body[data-dsh-cottage] [data-cottage-settings] .cottage-settings-header {
   padding: 14px 16px;
   display: flex;
 }
-body[data-dsh-cottage] [data-cottage-settings] .cottage-settings-header:focus-visible {
+body[data-dsh-skin] [data-skin-settings] .skin-settings-header:focus-visible {
   outline: 2px solid var(--dsw-alias-brand-primary);
   outline-offset: -2px;
 }
-body[data-dsh-cottage] [data-cottage-settings] .cottage-settings-headText {
+body[data-dsh-skin] [data-skin-settings] .skin-settings-headText {
   flex-direction: column;
   flex: 1;
   gap: 4px;
   min-width: 0;
   display: flex;
 }
-body[data-dsh-cottage] [data-cottage-settings] .cottage-settings-name {
+body[data-dsh-skin] [data-skin-settings] .skin-settings-name {
   color: var(--dsw-alias-label-primary);
   font-size: 15px;
   font-weight: 600;
   line-height: 1.4;
 }
-body[data-dsh-cottage] [data-cottage-settings] .cottage-settings-description {
+body[data-dsh-skin] [data-skin-settings] .skin-settings-description {
   color: var(--dsw-alias-label-tertiary);
   font-size: 13px;
   line-height: 1.5;
 }
-body[data-dsh-cottage] [data-cottage-settings] .cottage-settings-chevron {
+body[data-dsh-skin] [data-skin-settings] .skin-settings-chevron {
   color: var(--dsw-alias-label-tertiary);
   flex: none;
   transition: transform 0.16s;
 }
-body[data-dsh-cottage] [data-cottage-settings] .cottage-settings-chevron-open {
+body[data-dsh-skin] [data-skin-settings] .skin-settings-chevron-open {
   transform: rotate(180deg);
 }
-body[data-dsh-cottage] [data-cottage-settings] .cottage-settings-pending {
+body[data-dsh-skin] [data-skin-settings] .skin-settings-pending {
   white-space: nowrap;
   background: var(--dsw-alias-bg-module-platform, rgba(0, 0, 0, 0.06));
   color: var(--dsw-alias-label-secondary);
@@ -818,7 +818,7 @@ body[data-dsh-cottage] [data-cottage-settings] .cottage-settings-pending {
   font-weight: 500;
   line-height: 17px;
 }
-body[data-dsh-cottage] [data-cottage-settings] .cottage-settings-body {
+body[data-dsh-skin] [data-skin-settings] .skin-settings-body {
   border-top: 1px solid var(--dsw-alias-border-l2);
   margin: 0 16px;
   padding-bottom: 8px;
@@ -826,28 +826,28 @@ body[data-dsh-cottage] [data-cottage-settings] .cottage-settings-body {
   gap: 12px;
   display: flex;
 }
-body[data-dsh-cottage] [data-cottage-settings] .cottage-settings-row {
+body[data-dsh-skin] [data-skin-settings] .skin-settings-row {
   flex-direction: column;
   gap: 4px;
   display: flex;
 }
-body[data-dsh-cottage] [data-cottage-settings] .cottage-settings-rowTop {
+body[data-dsh-skin] [data-skin-settings] .skin-settings-rowTop {
   align-items: baseline;
   justify-content: space-between;
   gap: 8px;
   display: flex;
 }
-body[data-dsh-cottage] [data-cottage-settings] .cottage-settings-check {
+body[data-dsh-skin] [data-skin-settings] .skin-settings-check {
   flex-direction: row;
   align-items: center;
   gap: 8px;
 }
-body[data-dsh-cottage] [data-cottage-settings] .cottage-settings-label {
+body[data-dsh-skin] [data-skin-settings] .skin-settings-label {
   color: var(--dsw-alias-label-primary);
   font-size: 13px;
   line-height: 20px;
 }
-body[data-dsh-cottage] [data-cottage-settings] .cottage-settings-reset {
+body[data-dsh-skin] [data-skin-settings] .skin-settings-reset {
   appearance: none;
   border: 0;
   background: 0 0;
@@ -858,15 +858,15 @@ body[data-dsh-cottage] [data-cottage-settings] .cottage-settings-reset {
   line-height: 20px;
   padding: 0;
 }
-body[data-dsh-cottage] [data-cottage-settings] .cottage-settings-reset:hover {
+body[data-dsh-skin] [data-skin-settings] .skin-settings-reset:hover {
   color: var(--dsw-alias-label-secondary);
 }
-body[data-dsh-cottage] [data-cottage-settings] .cottage-settings-controls {
+body[data-dsh-skin] [data-skin-settings] .skin-settings-controls {
   align-items: center;
   gap: 12px;
   display: flex;
 }
-body[data-dsh-cottage] [data-cottage-settings] .cottage-settings-pick {
+body[data-dsh-skin] [data-skin-settings] .skin-settings-pick {
   appearance: none;
   font: inherit;
   cursor: pointer;
@@ -878,16 +878,16 @@ body[data-dsh-cottage] [data-cottage-settings] .cottage-settings-pick {
   color: var(--dsw-alias-label-secondary);
   background: 0 0;
 }
-body[data-dsh-cottage] [data-cottage-settings] .cottage-settings-pick:hover {
+body[data-dsh-skin] [data-skin-settings] .skin-settings-pick:hover {
   color: var(--dsw-alias-label-primary);
   border-color: var(--dsw-alias-label-dimmed);
 }
-body[data-dsh-cottage] [data-cottage-settings] .cottage-settings-pick:disabled {
+body[data-dsh-skin] [data-skin-settings] .skin-settings-pick:disabled {
   opacity: 0.55;
   cursor: default;
 }
-body[data-dsh-cottage] [data-cottage-settings] input[type="text"],
-body[data-dsh-cottage] [data-cottage-settings] input[type="number"] {
+body[data-dsh-skin] [data-skin-settings] input[type="text"],
+body[data-dsh-skin] [data-skin-settings] input[type="number"] {
   box-sizing: border-box;
   width: 100%;
   height: 34px;
@@ -899,18 +899,18 @@ body[data-dsh-cottage] [data-cottage-settings] input[type="number"] {
   font: inherit;
   font-size: 13px;
 }
-body[data-dsh-cottage] [data-cottage-settings] input[type="number"] {
+body[data-dsh-skin] [data-skin-settings] input[type="number"] {
   width: 140px;
 }
-body[data-dsh-cottage] [data-cottage-settings] input[type="checkbox"] {
+body[data-dsh-skin] [data-skin-settings] input[type="checkbox"] {
   accent-color: var(--dsw-alias-brand-primary, #5a9fd4);
 }
-body[data-dsh-cottage] [data-cottage-settings] .cottage-settings-hint {
+body[data-dsh-skin] [data-skin-settings] .skin-settings-hint {
   color: var(--dsw-alias-label-tertiary);
   font-size: 12px;
   line-height: 18px;
 }
-body[data-dsh-cottage] [data-cottage-settings] .cottage-settings-footer {
+body[data-dsh-skin] [data-skin-settings] .skin-settings-footer {
   border-top: 1px solid var(--dsw-alias-border-l2);
   justify-content: flex-end;
   align-items: center;
@@ -918,7 +918,7 @@ body[data-dsh-cottage] [data-cottage-settings] .cottage-settings-footer {
   padding: 12px 0 4px;
   display: flex;
 }
-body[data-dsh-cottage] [data-cottage-settings] .cottage-settings-failed {
+body[data-dsh-skin] [data-skin-settings] .skin-settings-failed {
   min-width: 0;
   color: var(--dsw-alias-state-error-primary);
   flex: 1;
@@ -926,8 +926,8 @@ body[data-dsh-cottage] [data-cottage-settings] .cottage-settings-failed {
   font-size: 12px;
   line-height: 1.5;
 }
-body[data-dsh-cottage] [data-cottage-settings] .cottage-settings-discard,
-body[data-dsh-cottage] [data-cottage-settings] .cottage-settings-save {
+body[data-dsh-skin] [data-skin-settings] .skin-settings-discard,
+body[data-dsh-skin] [data-skin-settings] .skin-settings-save {
   appearance: none;
   font: inherit;
   cursor: pointer;
@@ -937,17 +937,17 @@ body[data-dsh-cottage] [data-cottage-settings] .cottage-settings-save {
   font-size: 13px;
   line-height: 1.5;
 }
-body[data-dsh-cottage] [data-cottage-settings] .cottage-settings-discard {
+body[data-dsh-skin] [data-skin-settings] .skin-settings-discard {
   border-color: var(--dsw-alias-border-l2);
   color: var(--dsw-alias-label-secondary);
   background: 0 0;
 }
-body[data-dsh-cottage] [data-cottage-settings] .cottage-settings-save {
+body[data-dsh-skin] [data-skin-settings] .skin-settings-save {
   background: var(--dsw-alias-button-primary-fill, #5a9fd4);
   color: var(--dsw-alias-button-primary-invert, #ffffff);
 }
-body[data-dsh-cottage] [data-cottage-settings] .cottage-settings-save:disabled,
-body[data-dsh-cottage] [data-cottage-settings] .cottage-settings-discard:disabled {
+body[data-dsh-skin] [data-skin-settings] .skin-settings-save:disabled,
+body[data-dsh-skin] [data-skin-settings] .skin-settings-discard:disabled {
   opacity: 0.55;
   cursor: default;
 }
