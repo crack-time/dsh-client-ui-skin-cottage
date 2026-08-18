@@ -3,6 +3,18 @@ import { createElement } from 'react'
 import { createRoot } from 'react-dom/client'
 import { ArchiveView } from './archive.js'
 import { registerFileMention } from './mention.js'
+import {
+  COTTAGE_CONFIG_URL,
+  COTTAGE_DEFAULTS,
+  createCottageCardStore,
+  installCottageSettingsCard,
+} from './settings-card.js'
+import {
+  currentPicked,
+  disposePicked,
+  initPicked,
+  subscribePicked,
+} from './local-wallpaper.js'
 
 /**
  * Client entry for the Pastoral Cottage skin.
@@ -19,12 +31,29 @@ import { registerFileMention } from './mention.js'
 declare const css: string
 
 // Wallpaper served by the host route (src/index.ts registers it).
+const BG_URL = '/plugins/@crack/dsh-client-ui-skin-cottage/bg.jpg'
 const BG =
-  'url("/plugins/@crack/dsh-client-ui-skin-cottage/bg.jpg") center center / cover no-repeat fixed #3a6ea5'
+  `url("${BG_URL}") center center / cover no-repeat fixed #3a6ea5`
+
+/**
+ * Resolved skin settings, read from the host /api/config endpoint and
+ * refreshed on every `settings/document-updated` wire event, so dsh rc.7's
+ * "cottage" settings card edits apply live (no page reload).
+ */
+interface CottageSettings {
+  wallpaperUrl?: string
+  glassOpacity?: number
+  archiveButton?: boolean
+}
+let settings: CottageSettings = {}
+/** Whether the sidebar archive entry may be shown (settings.archiveButton). */
+let archiveEnabled = true
+/** Snapshot source for the settings-dialog card (kept in sync on refresh). */
+const cardStore = createCottageCardStore()
 
 /** Client-side service dependencies (runtime inject declaration; the
  * package.json dsh.client.inject metadata mirrors this for the loader). */
-export const inject = ['inputTriggers', 'locale', 'conversation']
+export const inject = ['inputTriggers', 'locale', 'conversation', 'slots', 'remote']
 
 export function apply(ctx: ClientContext): void {
   const body = document.body
@@ -32,14 +61,57 @@ export function apply(ctx: ClientContext): void {
   try {
     registerFileMention(ctx)
   } catch {}
+  // Settings-dialog card: registers the locale dict and the `settings.plugin.item` slot entry.
+  installCottageSettingsCard(ctx, cardStore)
   // Inline style beats CSS rules. DSH theme may re-set body.style.background
   // on token overrides, so we guard with a MutationObserver.
-  function setBg() {
-    body.style.background = BG
+  let currentBg = BG
+  function applyBg() {
+    body.style.background = currentBg
   }
-  setBg()
+  function clamp01(v: number): number {
+    return Math.min(1, Math.max(0, v))
+  }
+  /** Apply all settings-card knobs to the live page. */
+  function applyConfig() {
+    // Wallpaper source precedence: picked local file (zero-copy handle from
+    // the File System Access API) → settings URL → bundled asset.
+    // Adaptive fit: once the image's real dimensions are known, use `cover`
+    // only when its aspect ratio is close to the viewport's (fills the
+    // screen, tiny crop); otherwise switch to `contain` so the WHOLE picture
+    // stays visible — no more truncation for portrait/panorama uploads.
+    const url = (settings.wallpaperUrl ?? '').trim()
+    const src = currentPicked()?.blobUrl ?? (url || BG_URL)
+    const applyBgSrc = (fit: 'cover' | 'contain') => {
+      currentBg = `url("${src}") center center / ${fit} no-repeat fixed #3a6ea5`
+      applyBg()
+    }
+    const probe = new Image()
+    probe.onload = () => {
+      const winAspect = window.innerWidth / Math.max(1, window.innerHeight)
+      const imgAspect = probe.naturalWidth / Math.max(1, probe.naturalHeight)
+      const fit =
+        imgAspect < winAspect * 0.85 || imgAspect > winAspect * 1.18
+          ? 'contain'
+          : 'cover'
+      applyBgSrc(fit)
+    }
+    probe.onerror = () => applyBgSrc('cover')
+    probe.src = src
+    // Frosted-glass strength, driving the --cottage-glass token family the
+    // skin CSS maps onto the translucent panels (default 0.48 = the bundled
+    // look; the card's number field ranges 0..1).
+    const glass = clamp01(typeof settings.glassOpacity === 'number' ? settings.glassOpacity : 0.48)
+    body.style.setProperty('--cottage-glass', String(glass))
+    archiveEnabled = settings.archiveButton !== false
+  }
+  applyConfig()
+  // Picked local wallpaper (File System Access API handle): restore it on
+  // boot and re-apply whenever the card picks or clears one.
+  subscribePicked(() => applyConfig())
+  void initPicked()
   const obs = new MutationObserver(() => {
-    if (body.style.background !== BG) setBg()
+    if (body.style.background !== currentBg) applyBg()
   })
   obs.observe(body, { attributes: true, attributeFilter: ['style'] })
 
@@ -146,7 +218,13 @@ export function apply(ctx: ClientContext): void {
   // while the user is already at the bottom (streaming content).
   let lastCrumbs: string | null = null
   function onDomChange() {
-    ensureArchiveButton()
+    if (archiveEnabled) ensureArchiveButton()
+    else {
+      // Settings card turned the archive entry off: drop the button (and any
+      // open overlay) until it is turned back on.
+      document.querySelectorAll('[data-cottage-archive-btn]').forEach((el) => el.remove())
+      closeArchiveView()
+    }
     moveSeat()
     const seat = document.querySelector('[data-composer-seat]')
     if (seat !== lastSeat) {
@@ -234,13 +312,50 @@ export function apply(ctx: ClientContext): void {
     attributeFilter: ['data-phase', 'data-conversation-composer-overlay'],
   })
 
+  // Settings card: pull the resolved config once, then live-apply on every
+  // `settings/document-updated` wire event (emitted by the host after a card
+  // write commits).
+  async function refreshConfig() {
+    try {
+      const res = await fetch(COTTAGE_CONFIG_URL, { cache: 'no-store' })
+      if (!res.ok) return
+      settings = (await res.json()) as CottageSettings
+      applyConfig()
+      onDomChange()
+      cardStore.set({
+        loaded: true,
+        wallpaperUrl: settings.wallpaperUrl ?? COTTAGE_DEFAULTS.wallpaperUrl,
+        glassOpacity: settings.glassOpacity ?? COTTAGE_DEFAULTS.glassOpacity,
+        archiveButton: settings.archiveButton ?? COTTAGE_DEFAULTS.archiveButton,
+      })
+    } catch {
+      // Host endpoint not settled yet: keep the last-applied config; the
+      // wire subscription below retries on the next document update.
+    }
+  }
+  void refreshConfig()
+  let offRemote: (() => void) | null = null
+  try {
+    const remote = ctx.get('remote') as
+      | { $on: (event: string, listener: () => void) => () => void }
+      | undefined
+    if (remote) {
+      offRemote = remote.$on('settings/document-updated', () => {
+        void refreshConfig()
+      })
+    }
+  } catch {}
+
   try {
     ctx.effect(() => () => {
       obs.disconnect()
       obs2.disconnect()
       if (seatRO) seatRO.disconnect()
+      offRemote?.()
+      disposePicked()
       delete body.dataset.dshCottage
       body.style.removeProperty('background')
+      body.style.removeProperty('--cottage-glass')
       document.querySelectorAll('[data-cottage-archive-btn]').forEach((el) => el.remove())
       closeArchiveView()
     }, 'ui-skin-cottage: background')

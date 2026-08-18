@@ -19,20 +19,37 @@ import type { IncomingMessage, ServerResponse } from 'node:http'
 import type { Context } from '@deepseek-ai/cordis'
 // Importing these types loads the cordis Context declaration-merges:
 // webServer (dsh-host-webserver), workspaceRegistry (dsh-workspace),
-// sessions (dsh-session), sessionPersistence (dsh-session-persistence).
+// sessions (dsh-session), sessionPersistence (dsh-session-persistence),
+// settings (dsh-settings).
 import type { WebRoute } from '@deepseek-ai/dsh-host-webserver'
 import type { WorkspaceRegistry } from '@deepseek-ai/dsh-workspace'
 import type { SessionStore } from '@deepseek-ai/dsh-session'
 import type { SessionPersistence } from '@deepseek-ai/dsh-session-persistence'
 import type { SessionProjectionCache } from '@deepseek-ai/dsh-session-projection-cache'
 import type { SessionTitleService } from '@deepseek-ai/dsh-session-title'
+import z from '@deepseek-ai/schemastery'
+import { settingsNamespace, type SettingsScope } from '@deepseek-ai/dsh-settings'
 
 const BG_PATH = fileURLToPath(new URL('../assets/cottage-bg.jpg', import.meta.url))
 const BG_ROUTE = '/plugins/@crack/dsh-client-ui-skin-cottage/bg.jpg'
 const API_PREFIX = '/plugins/@crack/dsh-client-ui-skin-cottage/api'
 
+/**
+ * Settings card for this skin (surfaced by dsh rc.7's settings page under
+ * the "cottage" namespace; changes apply live, no restart needed):
+ *  - wallpaperUrl: custom wallpaper over the bundled asset (empty = asset);
+ *  - glassOpacity: frosted-glass strength of the translucent panels
+ *    (client maps it onto the `--cottage-glass` token family);
+ *  - archiveButton: show/hide the sidebar archive entry.
+ */
+const COTTAGE_SETTINGS_SCHEMA = z.object({
+  wallpaperUrl: z.string().default(''),
+  glassOpacity: z.number().min(0).max(1).default(0.48),
+  archiveButton: z.boolean().default(true),
+})
+
 /** Required services: the web route registry, the workspace registry, session persistence. */
-const inject = ['webServer', 'workspaceRegistry', 'sessionPersistence', 'sessionProjectionCache', 'sessions', 'sessionTitle']
+const inject = ['webServer', 'workspaceRegistry', 'sessionPersistence', 'sessionProjectionCache', 'sessions', 'sessionTitle', 'settings']
 
 function sendJson(res: ServerResponse, status: number, body: unknown): void {
   const text = JSON.stringify(body)
@@ -375,10 +392,33 @@ interface ArchivedSession {
   updatedAt: number | null
 }
 
-async function handleApi(ctx: Context, req: IncomingMessage, res: ServerResponse): Promise<void> {
+async function handleApi(
+  ctx: Context,
+  settings: SettingsScope<{ wallpaperUrl: string; glassOpacity: number; archiveButton: boolean }>,
+  req: IncomingMessage,
+  res: ServerResponse,
+): Promise<void> {
   const url = new URL(req.url ?? '/', 'http://localhost')
   const method = req.method ?? 'GET'
   try {
+    if (method === 'GET' && url.pathname === API_PREFIX + '/config') {
+      // Current resolved skin settings (schema defaults + user layer). The
+      // client re-fetches on the `settings/document-updated` wire event, so
+      // card edits apply live without a page reload.
+      return sendJson(res, 200, settings.get())
+    }
+    if (method === 'POST' && url.pathname === API_PREFIX + '/config') {
+      // The settings card's write path: a JSON patch over the "cottage"
+      // namespace user layer. Goes through ctx.settings.update so the schema
+      // validates it, the revision bumps, and `settings/document-updated`
+      // fans out to every browser half (card + skin) for a live apply.
+      const body = JSON.parse((await readBody(req)) || '{}') as { patch?: unknown }
+      if (!body.patch || typeof body.patch !== 'object' || Array.isArray(body.patch)) {
+        return sendJson(res, 400, { error: 'patch (object) required' })
+      }
+      await settings.update(body.patch as Record<string, unknown>)
+      return sendJson(res, 200, settings.get())
+    }
     if (method === 'GET' && url.pathname === API_PREFIX + '/archived') {
       return sendJson(res, 200, await listArchived(ctx))
     }
@@ -427,6 +467,14 @@ async function handleApi(ctx: Context, req: IncomingMessage, res: ServerResponse
 }
 
 function apply(ctx: Context) {
+  // Register the "cottage" settings namespace: dsh rc.7 renders it as a
+  // settings card automatically (schemastery schema → form). `applies: 'live'`
+  // means card edits reach the client immediately via document-updated.
+  const settings = ctx.settings.register(
+    settingsNamespace('cottage'),
+    COTTAGE_SETTINGS_SCHEMA,
+    { applies: 'live' },
+  )
   ctx.effect(() => {
     const disposers = [
       ctx.webServer.register({
@@ -450,7 +498,7 @@ function apply(ctx: Context) {
       ctx.webServer.register({
         kind: 'prefix',
         path: API_PREFIX,
-        handler: (req, res) => handleApi(ctx, req, res),
+        handler: (req, res) => handleApi(ctx, settings, req, res),
       } satisfies WebRoute),
     ]
     return () => disposers.forEach((dispose) => dispose())

@@ -29,10 +29,13 @@ body[data-dsh-cottage] {
   --dsw-alias-brand-text: #4a8fc4;
 
   /* 背景：半透明毛玻璃 */
-  --dsw-alias-bg-base: rgba(255, 255, 255, 0.48);
-  --dsw-alias-bg-layer-1: rgba(255, 255, 255, 0.42);
+  /* 毛玻璃强度（0..1）：由设置卡片的 glassOpacity 通过 --cottage-glass 覆盖
+     （客户端内联设置；未设置时用各 token 自己的回退值，等于原外观） */
+  --cottage-glass: 0.48;
+  --dsw-alias-bg-base: rgba(255, 255, 255, var(--cottage-glass, 0.48));
+  --dsw-alias-bg-layer-1: rgba(255, 255, 255, var(--cottage-glass, 0.42));
   --dsw-alias-bg-layer-2: rgba(250, 249, 247, 0.90);
-  --dsw-alias-bg-layer-3: rgba(240, 237, 230, 0.48);
+  --dsw-alias-bg-layer-3: rgba(240, 237, 230, var(--cottage-glass, 0.48));
   --dsw-alias-bg-overlay: rgba(255, 255, 255, 0.68);
   --dsw-alias-bg-mask-1: rgba(0, 0, 0, 0.45);
 
@@ -59,10 +62,10 @@ body[data-dsh-cottage] {
   --dsw-alias-button-contrast-fill: #3a6ea5;
 
   /* 侧边栏 */
-  --dsw-specific-sidebar-fill: rgba(248, 245, 240, 0.42);
+  --dsw-specific-sidebar-fill: rgba(248, 245, 240, var(--cottage-glass, 0.42));
 
   /* 聊天气泡 */
-  --dsw-specific-bubble: rgba(255, 255, 255, 0.48);
+  --dsw-specific-bubble: rgba(255, 255, 255, var(--cottage-glass, 0.48));
   --dsw-specific-bubble-highlight: rgba(90, 159, 212, 0.12);
 
   /* 输入框 */
@@ -89,10 +92,10 @@ body[data-dsh-cottage][data-ds-dark-theme] {
   --dsw-alias-brand-primary-invert: #1a2a3a;
   --dsw-alias-brand-text: #7ab8e8;
 
-  --dsw-alias-bg-base: rgba(18, 22, 30, 0.52);
-  --dsw-alias-bg-layer-1: rgba(22, 26, 34, 0.50);
+  --dsw-alias-bg-base: rgba(18, 22, 30, var(--cottage-glass, 0.52));
+  --dsw-alias-bg-layer-1: rgba(22, 26, 34, var(--cottage-glass, 0.50));
   --dsw-alias-bg-layer-2: rgba(26, 30, 38, 0.90);
-  --dsw-alias-bg-layer-3: rgba(30, 34, 42, 0.46);
+  --dsw-alias-bg-layer-3: rgba(30, 34, 42, var(--cottage-glass, 0.46));
   --dsw-alias-bg-overlay: rgba(20, 24, 32, 0.72);
   --dsw-alias-bg-mask-1: rgba(0, 0, 0, 0.55);
 
@@ -114,8 +117,8 @@ body[data-dsh-cottage][data-ds-dark-theme] {
   --dsw-alias-button-elevated-fill: rgba(30, 34, 42, 0.62);
   --dsw-alias-button-contrast-fill: #7ab8e8;
 
-  --dsw-specific-sidebar-fill: rgba(22, 26, 34, 0.52);
-  --dsw-specific-bubble: rgba(26, 30, 38, 0.50);
+  --dsw-specific-sidebar-fill: rgba(22, 26, 34, var(--cottage-glass, 0.52));
+  --dsw-specific-bubble: rgba(26, 30, 38, var(--cottage-glass, 0.50));
   --dsw-specific-bubble-highlight: rgba(122, 184, 232, 0.12);
   --dsw-specific-input-major: rgba(18, 22, 30, 0.85);
   --dsw-specific-menu: #161a22;
@@ -739,5 +742,213 @@ body[data-dsh-cottage] [role="listbox"]:has([data-source="文件"]) {
 }
 body[data-dsh-cottage] [role="listbox"]:has([data-source="文件"]) [role="option"] > span:nth-child(2) {
   max-width: none;
+}
+
+/* ============================================
+   设置弹窗 · "cottage" 设置卡片（rc.7 插件设置卡片）
+   卡片外壳样式对齐内置插件卡片（PluginCard.module.css 的同款值）
+   ============================================ */
+body[data-dsh-cottage] [data-cottage-settings].cottage-settings-card {
+  border: 1px solid var(--dsw-alias-border-l2);
+  background: var(--dsw-alias-bg-layer-3);
+  border-radius: 12px;
+  list-style: none;
+  transition: border-color 0.16s, background 0.16s;
+}
+body[data-dsh-cottage] [data-cottage-settings].cottage-settings-card:hover {
+  border-color: var(--dsw-alias-label-dimmed);
+}
+body[data-dsh-cottage] [data-cottage-settings].cottage-settings-card-open {
+  background: var(--dsw-alias-bg-layer-2);
+  border-color: var(--dsw-alias-label-dimmed);
+}
+body[data-dsh-cottage] [data-cottage-settings] .cottage-settings-header {
+  appearance: none;
+  width: 100%;
+  font: inherit;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+  background: 0 0;
+  border: 0;
+  border-radius: 12px;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  display: flex;
+}
+body[data-dsh-cottage] [data-cottage-settings] .cottage-settings-header:focus-visible {
+  outline: 2px solid var(--dsw-alias-brand-primary);
+  outline-offset: -2px;
+}
+body[data-dsh-cottage] [data-cottage-settings] .cottage-settings-headText {
+  flex-direction: column;
+  flex: 1;
+  gap: 4px;
+  min-width: 0;
+  display: flex;
+}
+body[data-dsh-cottage] [data-cottage-settings] .cottage-settings-name {
+  color: var(--dsw-alias-label-primary);
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.4;
+}
+body[data-dsh-cottage] [data-cottage-settings] .cottage-settings-description {
+  color: var(--dsw-alias-label-tertiary);
+  font-size: 13px;
+  line-height: 1.5;
+}
+body[data-dsh-cottage] [data-cottage-settings] .cottage-settings-chevron {
+  color: var(--dsw-alias-label-tertiary);
+  flex: none;
+  transition: transform 0.16s;
+}
+body[data-dsh-cottage] [data-cottage-settings] .cottage-settings-chevron-open {
+  transform: rotate(180deg);
+}
+body[data-dsh-cottage] [data-cottage-settings] .cottage-settings-pending {
+  white-space: nowrap;
+  background: var(--dsw-alias-bg-module-platform, rgba(0, 0, 0, 0.06));
+  color: var(--dsw-alias-label-secondary);
+  border-radius: 999px;
+  flex: none;
+  padding: 1px 8px;
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 17px;
+}
+body[data-dsh-cottage] [data-cottage-settings] .cottage-settings-body {
+  border-top: 1px solid var(--dsw-alias-border-l2);
+  margin: 0 16px;
+  padding-bottom: 8px;
+  flex-direction: column;
+  gap: 12px;
+  display: flex;
+}
+body[data-dsh-cottage] [data-cottage-settings] .cottage-settings-row {
+  flex-direction: column;
+  gap: 4px;
+  display: flex;
+}
+body[data-dsh-cottage] [data-cottage-settings] .cottage-settings-rowTop {
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+  display: flex;
+}
+body[data-dsh-cottage] [data-cottage-settings] .cottage-settings-check {
+  flex-direction: row;
+  align-items: center;
+  gap: 8px;
+}
+body[data-dsh-cottage] [data-cottage-settings] .cottage-settings-label {
+  color: var(--dsw-alias-label-primary);
+  font-size: 13px;
+  line-height: 20px;
+}
+body[data-dsh-cottage] [data-cottage-settings] .cottage-settings-reset {
+  appearance: none;
+  border: 0;
+  background: 0 0;
+  color: var(--dsw-alias-label-tertiary);
+  cursor: pointer;
+  font: inherit;
+  font-size: 12px;
+  line-height: 20px;
+  padding: 0;
+}
+body[data-dsh-cottage] [data-cottage-settings] .cottage-settings-reset:hover {
+  color: var(--dsw-alias-label-secondary);
+}
+body[data-dsh-cottage] [data-cottage-settings] .cottage-settings-controls {
+  align-items: center;
+  gap: 12px;
+  display: flex;
+}
+body[data-dsh-cottage] [data-cottage-settings] .cottage-settings-pick {
+  appearance: none;
+  font: inherit;
+  cursor: pointer;
+  border: 1px solid var(--dsw-alias-border-l2);
+  border-radius: 8px;
+  padding: 4px 12px;
+  font-size: 12px;
+  line-height: 1.5;
+  color: var(--dsw-alias-label-secondary);
+  background: 0 0;
+}
+body[data-dsh-cottage] [data-cottage-settings] .cottage-settings-pick:hover {
+  color: var(--dsw-alias-label-primary);
+  border-color: var(--dsw-alias-label-dimmed);
+}
+body[data-dsh-cottage] [data-cottage-settings] .cottage-settings-pick:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+body[data-dsh-cottage] [data-cottage-settings] input[type="text"],
+body[data-dsh-cottage] [data-cottage-settings] input[type="number"] {
+  box-sizing: border-box;
+  width: 100%;
+  height: 34px;
+  padding: 6px 10px;
+  border: 1px solid var(--dsw-alias-border-l2);
+  border-radius: 8px;
+  background: var(--dsw-alias-bg-layer-2);
+  color: var(--dsw-alias-label-primary);
+  font: inherit;
+  font-size: 13px;
+}
+body[data-dsh-cottage] [data-cottage-settings] input[type="number"] {
+  width: 140px;
+}
+body[data-dsh-cottage] [data-cottage-settings] input[type="checkbox"] {
+  accent-color: var(--dsw-alias-brand-primary, #5a9fd4);
+}
+body[data-dsh-cottage] [data-cottage-settings] .cottage-settings-hint {
+  color: var(--dsw-alias-label-tertiary);
+  font-size: 12px;
+  line-height: 18px;
+}
+body[data-dsh-cottage] [data-cottage-settings] .cottage-settings-footer {
+  border-top: 1px solid var(--dsw-alias-border-l2);
+  justify-content: flex-end;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 0 4px;
+  display: flex;
+}
+body[data-dsh-cottage] [data-cottage-settings] .cottage-settings-failed {
+  min-width: 0;
+  color: var(--dsw-alias-state-error-primary);
+  flex: 1;
+  margin: 0;
+  font-size: 12px;
+  line-height: 1.5;
+}
+body[data-dsh-cottage] [data-cottage-settings] .cottage-settings-discard,
+body[data-dsh-cottage] [data-cottage-settings] .cottage-settings-save {
+  appearance: none;
+  font: inherit;
+  cursor: pointer;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  padding: 5px 14px;
+  font-size: 13px;
+  line-height: 1.5;
+}
+body[data-dsh-cottage] [data-cottage-settings] .cottage-settings-discard {
+  border-color: var(--dsw-alias-border-l2);
+  color: var(--dsw-alias-label-secondary);
+  background: 0 0;
+}
+body[data-dsh-cottage] [data-cottage-settings] .cottage-settings-save {
+  background: var(--dsw-alias-button-primary-fill, #5a9fd4);
+  color: var(--dsw-alias-button-primary-invert, #ffffff);
+}
+body[data-dsh-cottage] [data-cottage-settings] .cottage-settings-save:disabled,
+body[data-dsh-cottage] [data-cottage-settings] .cottage-settings-discard:disabled {
+  opacity: 0.55;
+  cursor: default;
 }
 
