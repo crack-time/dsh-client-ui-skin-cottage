@@ -7,9 +7,19 @@
 ## 功能
 
 ### 壁纸与整体氛围
-- 3840x2160 田园风格壁纸全屏铺底
+- 3840x2160 田园风格壁纸全屏铺底，**自适应缩放**：图片比例接近屏幕时 `cover` 铺满，竖图/超宽图自动切 `contain` 完整显示、不裁剪
 - `#root` / 布局 frame 全透明，壁纸完全透出；明暗主题自动适配
 - 天空蓝品牌色、柔和边框、细滚动条；tooltip 深底白字
+
+### 壁纸设置卡片（dsh rc.7 设置页扩展）
+- 在 GUI **设置 → 插件 → 插件配置** 页新增「壁纸」卡片（与内置 shell/agent-loop/web-search 卡片同款可折叠外观、暂存式保存/放弃、未保存徽章）
+- **选择本机图片**：用浏览器 File System Access API 弹系统文件对话框，**文件原地使用、零拷贝**（不复制进 DSH）；句柄持久化在浏览器 IndexedDB，重启后自动恢复；仅 Chrome/Edge 支持，其他浏览器不显示该入口
+- **移除本机图片**：清除句柄，回退到 URL 设置或内置壁纸
+- **自定义壁纸 URL**：手动填远程图片地址；来源优先级 = 本机图片 > URL > 内置壁纸
+- 设置通过宿主 `ctx.settings` 持久化（`cottage` 命名空间），改动即时生效、无需重启
+- API：`/plugins/@crack/dsh-client-ui-skin-cottage/api`（GET/POST /config）
+- **要求 dsh ≥ rc.7**（设置卡片机制在 rc.7 引入）；本机图片选择要求 Chromium 内核浏览器
+
 
 ### 面板与透明度
 - 中央消息面板：与输入框同宽（780px）居中、85% 不透明、直角，左右边缘 2px 渐变淡出，与壁纸平滑衔接
@@ -66,7 +76,7 @@ dsh plugin --profile web add "link:E:\path\to\dsh-client-ui-skin-cottage"
 
 ## 开发
 
-需要 Node + pnpm。
+需要 Node + pnpm；**dsh 运行时与 devDependencies 均需 0.1.0-rc.7**（设置卡片为 rc.7 新能力）。
 
 ```powershell
 pnpm install          # 安装构建链（typescript / tsdown）
@@ -89,20 +99,22 @@ pnpm run typecheck    # 类型检查
 
 ```
 dsh-client-ui-skin-cottage/
-├── src/index.ts                    # host 面：注册 bg.jpg 路由
-├── src/client/index.ts             # 浏览器端逻辑（apply）
+├── src/index.ts                    # host 面：注册 bg.jpg / api 路由 + cottage 设置命名空间
+├── src/client/index.ts             # 浏览器端逻辑（apply）+ 配置实时应用
+├── src/client/settings-card.tsx    # 设置弹窗壁纸卡片（可折叠外壳 + 本机图片/URL）
+├── src/client/local-wallpaper.ts   # File System Access API 零拷贝本机图片（IndexedDB 句柄）
 ├── src/client/archive.tsx          # 归档视图 React 组件（原生 Modal/Button 复用）
-├── src/client/cottage.css   # 皮肤 CSS 源文件（构建时注入）
+├── src/client/cottage.css          # 皮肤 CSS 源文件（构建时注入）
 ├── assets/cottage-bg.jpg           # 壁纸原图（host 路由 serve）
 ├── scripts/cottage-inline-plugin.mjs  # tsdown 插件：内联 CSS
 ├── scripts/dev.mjs                 # watch 并行构建
 ├── tsconfig.json / tsconfig.client.json  # host/client 双 program
 ├── tsdown.config.ts                # client bundle 协议构建
 ├── lib/client.js                   # 浏览器端 bundle（已构建，clone 即用）
-├── lib/index.js                    # 宿主端空入口
+├── lib/index.js                    # 宿主端入口
 ├── cordis.patch.yml                # 插件自带注册 patch（参考）
 ├── skin.json                       # 皮肤元数据
-└── package.json                    # dsh.client 声明
+└── package.json                    # dsh.client 声明（devDeps 钉定 0.1.0-rc.7）
 ```
 
 ## 图片来源与版权
