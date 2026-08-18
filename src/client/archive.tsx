@@ -14,7 +14,7 @@ import { createPortal } from 'react-dom'
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { Button, Modal } from '@deepseek-ai/dsh-client-ui-primitives'
 
-const API = '/plugins/@crack/dsh-client-ui-skin-cottage/api'
+const API = '/plugins/@crack/dsh-web-ui-skin/api'
 const VIEW_KEY = 'dsh.workspace.view.v5'
 
 export interface ArchivedItem {

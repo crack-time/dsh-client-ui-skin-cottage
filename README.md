@@ -1,4 +1,4 @@
-# dsh-client-ui-skin-cottage
+# dsh-web-ui-skin
 
 田园小屋皮肤（Pastoral Cottage Skin）—— 面向 DeepSeek Harness Web GUI（dsh web）的纯 UI 换肤插件。
 
@@ -17,7 +17,7 @@
 - **移除本机图片**：清除句柄，回退到 URL 设置或内置壁纸
 - **自定义壁纸 URL**：手动填远程图片地址；来源优先级 = 本机图片 > URL > 内置壁纸
 - 设置通过宿主 `ctx.settings` 持久化（`cottage` 命名空间），改动即时生效、无需重启
-- API：`/plugins/@crack/dsh-client-ui-skin-cottage/api`（GET/POST /config）
+- API：`/plugins/@crack/dsh-web-ui-skin/api`（GET/POST /config）
 - **要求 dsh ≥ rc.7**（设置卡片机制在 rc.7 引入）；本机图片选择要求 Chromium 内核浏览器
 
 
@@ -48,14 +48,14 @@
   - 还原（unarchive）：回到原工作区位置
   - 删除：与工作区一致的原生确认弹窗（红色危险按钮 + 后果说明 + 进行中状态），移除日志文件，不可恢复
 - dsh 原生只有归档能力（archiveSession），本插件补齐了原生没有的 **重命名 / 恢复 / 删除** 操作
-- API：`/plugins/@crack/dsh-client-ui-skin-cottage/api`（GET /archived、POST /rename-session、POST /unarchive、POST /delete-session）
+- API：`/plugins/@crack/dsh-web-ui-skin/api`（GET /archived、POST /rename-session、POST /unarchive、POST /delete-session）
 
 
 ### 输入框 @ 文件提及（皮肤扩展）
 - 输入框输入 `@` 打开文件/目录候选菜单（复用 dsh 原生触发管线，与 `/` 命令菜单同源）
 - 目录可逐级进入；输入关键字（如 `@ass`）递归搜索当前工作目录（跳过 node_modules 等），长名称不截断，菜单宽度与 `/` 菜单一致
 - 选中后插入真实文本 `@相对路径`：光标对齐、宽度自适应；在提及末尾按 Backspace **一次性删除整个提及**
-- API：`/plugins/@crack/dsh-client-ui-skin-cottage/api`（GET /mention/files）
+- API：`/plugins/@crack/dsh-web-ui-skin/api`（GET /mention/files）
 
 ## 安装
 
@@ -63,13 +63,13 @@
 
 ```powershell
 # 1. 链接安装（一次性）
-dsh plugin --profile web add "link:E:\path\to\dsh-client-ui-skin-cottage"
+dsh plugin --profile web add "link:E:\path\to\dsh-web-ui-skin"
 
 # 2. 在 profile patch 中注册插件行
 #    编辑 C:\Users\<you>\.dsh\profiles\web\cordis.patch.yml，追加：
 #    - insert:
 #        - id: ui-skin-cottage
-#          name: '@crack/dsh-client-ui-skin-cottage'
+#          name: '@crack/dsh-web-ui-skin'
 
 # 3. 保存后 dsh 自动热重载（boot HMR 重读 patch），无需重启
 ```
@@ -93,12 +93,12 @@ pnpm run typecheck    # 类型检查
 
 1. 删除 `cordis.patch.yml` 中的 `ui-skin-cottage` 注册行
 2. 重启 dsh web
-3. （可选）`dsh plugin --profile web remove @crack/dsh-client-ui-skin-cottage`
+3. （可选）`dsh plugin --profile web remove @crack/dsh-web-ui-skin`
 
 ## 项目结构
 
 ```
-dsh-client-ui-skin-cottage/
+dsh-web-ui-skin/
 ├── src/index.ts                    # host 面：注册 bg.jpg / api 路由 + cottage 设置命名空间
 ├── src/client/index.ts             # 浏览器端逻辑（apply）+ 配置实时应用
 ├── src/client/settings-card.tsx    # 设置弹窗壁纸卡片（可折叠外壳 + 本机图片/URL）

@@ -21,7 +21,7 @@
 import type { ClientContext } from '@deepseek-ai/dsh-client-runtime/client'
 import type { InputTriggerCandidate, InputTriggerSource } from '@deepseek-ai/dsh-client-ui-input-trigger/client'
 
-const API = '/plugins/@crack/dsh-client-ui-skin-cottage/api'
+const API = '/plugins/@crack/dsh-web-ui-skin/api'
 
 /** Host answer for one directory level (see listMentionFiles in src/index.ts). */
 interface MentionListing {

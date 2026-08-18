@@ -44,7 +44,7 @@ export const COTTAGE_DEFAULTS: CottageSettings = {
 export type CottageCardState = CottageSettings & { loaded: boolean }
 
 /** Host endpoint for the URL field's settings read/write. */
-export const COTTAGE_CONFIG_URL = '/plugins/@crack/dsh-client-ui-skin-cottage/api/config'
+export const COTTAGE_CONFIG_URL = '/plugins/@crack/dsh-web-ui-skin/api/config'
 
 /** Tiny uSES-compatible snapshot store; the slot system exposes `hooks.*` as `use*`. */
 export function createCottageCardStore() {

@@ -31,7 +31,7 @@ import {
 declare const css: string
 
 // Wallpaper served by the host route (src/index.ts registers it).
-const BG_URL = '/plugins/@crack/dsh-client-ui-skin-cottage/bg.jpg'
+const BG_URL = '/plugins/@crack/dsh-web-ui-skin/bg.jpg'
 const BG =
   `url("${BG_URL}") center center / cover no-repeat fixed #3a6ea5`
 

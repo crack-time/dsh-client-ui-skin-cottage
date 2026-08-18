@@ -5,7 +5,7 @@ import { defineConfig } from 'tsdown'
 import { cottageInlinePlugin } from './scripts/cottage-inline-plugin.mjs'
 
 export default defineConfig({
-  name: '@crack/dsh-client-ui-skin-cottage/client',
+  name: '@crack/dsh-web-ui-skin/client',
   entry: { client: 'lib/client/index.js' },
   outDir: 'lib',
   format: 'cjs',
@@ -21,7 +21,7 @@ export default defineConfig({
   plugins: [cottageInlinePlugin()],
   outputOptions: {
     entryFileNames: 'client.js',
-    banner: 'window.__ModuleLoader__.load({ id: "@crack/dsh-client-ui-skin-cottage", factory: (require) => {',
+    banner: 'window.__ModuleLoader__.load({ id: "@crack/dsh-web-ui-skin", factory: (require) => {',
     intro: 'var module = { exports: {} }; var exports = module.exports;',
     footer: 'return module.exports; } });',
   },

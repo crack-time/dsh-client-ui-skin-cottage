@@ -28,7 +28,7 @@ export type CottageCardState = CottageSettings & {
     loaded: boolean;
 };
 /** Host endpoint for the URL field's settings read/write. */
-export declare const COTTAGE_CONFIG_URL = "/plugins/@crack/dsh-client-ui-skin-cottage/api/config";
+export declare const COTTAGE_CONFIG_URL = "/plugins/@crack/dsh-web-ui-skin/api/config";
 /** Tiny uSES-compatible snapshot store; the slot system exposes `hooks.*` as `use*`. */
 export declare function createCottageCardStore(): {
     getSnapshot: () => CottageCardState;

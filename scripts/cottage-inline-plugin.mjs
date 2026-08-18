@@ -8,7 +8,7 @@ import { fileURLToPath } from 'node:url'
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const CSS_PATH = resolve(__dirname, '../src/client/cottage.css')
-const PLUGIN_ID = '@crack/dsh-client-ui-skin-cottage'
+const PLUGIN_ID = '@crack/dsh-web-ui-skin'
 const CSS_TAG_ID = PLUGIN_ID + '/cottage.css'
 
 export function cottageInlinePlugin() {
